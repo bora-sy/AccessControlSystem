@@ -1,23 +1,25 @@
 #include "IO/CardReader.h"
+#include "IO/MelodyPlayer.h"
+
+
+Melody m1;
 
 void setup()
 {
   Serial.begin(921600);
   CardReader::Initialize();
+  MelodyPlayer::Initialize();
+
+  m1.AddNote(1500, 1000);
+  m1.AddNote(750, 200);
+  m1.AddNote(1500, 1000);
+  m1.AddNote(750, 200);
 }
 
 void loop()
 {
-    Card card = CardReader::ReadCard();
-
-    if (card.IsEmpty())
-        return;
-
-    Serial.print("Card UID: ");
-    for (int i = 0; i < FIXED_UID_LENGTH; i++)
-    {
-        Serial.print(card.UID[i], HEX);
-        Serial.print(" ");
-    }
-    Serial.println();
+    Serial.println("Playing Melody");
+    MelodyPlayer::PlayMelody(m1);
+    Serial.println("---");
+    delay(5000);
 }
