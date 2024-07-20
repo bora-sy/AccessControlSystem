@@ -22,13 +22,10 @@ namespace ACSBackend.Discord.Commands
         [SlashCommand("ping", "Replies with pong")]
         public async Task Ping(InteractionContext ctx)
         {
-            ModalSender modal = new ModalSender("Title");
-            modal.AddInput("inp1", "label");
-            modal.AddInput("inp2", "labela");
+            await ctx.DeferAsync();
 
-            bool suc = await modal.Send(ctx.Interaction);
-            
-            await ctx.Channel.SendMessageAsync(suc.ToString());
+
+            await ctx.EditResponseAsync("Pong!");
         }
 
     }

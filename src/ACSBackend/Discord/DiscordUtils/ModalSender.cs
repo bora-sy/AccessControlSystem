@@ -47,7 +47,7 @@ namespace ACSBackend.Discord.DiscordUtils
             result = resp.Result.Values.ToDictionary(x => x.Key, x => x.Value);
 
 
-            await resp.Result.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder());
+            await resp.Result.Interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.DeferredChannelMessageWithSource);
 
             return true;
         }
