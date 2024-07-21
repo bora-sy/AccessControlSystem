@@ -1,4 +1,5 @@
 
+using ACSBackend.Comms.TCP;
 using ACSBackend.Database;
 using BKDijitalYoklamaBackend.Discord;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,13 @@ namespace ACSBackend
     {
         public static async Task Main(string[] args)
         {
+            Config.Initialize();
+
+
             var builder = WebApplication.CreateBuilder(args);
 
             #region DB
-            string conn = Config.DB_CNCSTR ?? throw new Exception("DB Connection String is not set!");
+            string conn = Config.Database.ConnectionString;
             builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn), ServiceLifetime.Transient, ServiceLifetime.Transient);
             #endregion
 
@@ -41,6 +45,7 @@ namespace ACSBackend
             app.MapControllers();
 
             await DiscordMain.InitDiscord(app.Services);
+            await TCPMain.InitTCP(app.Services);
 
             app.Run();
         }
