@@ -8,9 +8,11 @@ namespace ACSBackend
 
         public static string FileDiscord => Path.Combine(ConfigFolder, "discord.json");
         public static string FileDatabase => Path.Combine(ConfigFolder, "database.json");
+        public static string FileComm => Path.Combine(ConfigFolder, "comm.json");
 
         public static DiscordConfig Discord { get; private set; }
         public static DatabaseConfig Database { get; private set; }
+        public static CommConfig Comm { get; private set; }
 
         private static void InitializeConfig<T>(string configFilepath)
         {
@@ -36,6 +38,8 @@ namespace ACSBackend
         {
             InitializeConfig<DiscordConfig>(FileDiscord);
             InitializeConfig<DatabaseConfig>(FileDatabase);
+            InitializeConfig<CommConfig>(FileComm);
+
         }
     }
 
@@ -51,6 +55,15 @@ namespace ACSBackend
     {
         [JsonProperty("ConnectionString")]
         public string ConnectionString { get; private set; }
+    }
+
+    public class CommConfig
+    {
+        [JsonProperty("TCP_Endpoint")]
+        public string TCP_Endpoint { get; private set; }
+
+        [JsonProperty("TCP_AuthKey")]
+        public ulong TCP_AuthKey { get; private set; }
     }
 
 }

@@ -1,6 +1,5 @@
 ﻿using ACSBackend.Database;
 using ACSBackend.Discord.Extensions;
-using ACSBackend.Web.Controllers;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;

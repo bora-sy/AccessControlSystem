@@ -8,13 +8,15 @@ namespace ACSBackend.Discord.DiscordUtils
     public class ModalSender
     {
         public string Title { get; private set; }
+        private DiscordClient Client;
         private List<TextInputComponent> _components = new();
         public IReadOnlyList<TextInputComponent> Components => _components.AsReadOnly();
         private Dictionary<string, string> result = new();
 
-        public ModalSender(string title)
+        public ModalSender(DiscordClient client, string title)
         {
             Title = title;
+            Client = client;
         }
 
 
@@ -40,7 +42,7 @@ namespace ACSBackend.Discord.DiscordUtils
             await interaction.CreateResponseAsync(DSharpPlus.InteractionResponseType.Modal, interResp);
 
 
-            var resp = await DiscordMain.Client.GetInteractivity().WaitForModalAsync(modalID, timeoutOverride);
+            var resp = await Client.GetInteractivity().WaitForModalAsync(modalID, timeoutOverride);
 
             if (resp.TimedOut) { result = new(); return false; }
 
