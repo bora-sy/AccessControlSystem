@@ -1,5 +1,5 @@
 
-using ACSBackend.Comms.TCP;
+using ACSBackend.Comms;
 using ACSBackend.Database;
 using BKDijitalYoklamaBackend.Discord;
 using Microsoft.EntityFrameworkCore;
@@ -27,8 +27,6 @@ namespace ACSBackend
 
                 builder.Services.AddEndpointsApiExplorer();
                 builder.Services.AddSwaggerGen(options => options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ACSBackend.xml")));
-
-                builder.Services.AddSingleton<TCPService>();
                 
                 var app = builder.Build();
                 
@@ -46,6 +44,8 @@ namespace ACSBackend
                 app.MapControllers();
 
                 await DiscordMain.InitDiscord(app.Services);
+                await ACSCommMain.InitACSComm(app.Services);
+
                 app.Run();
             }
             catch(Exception ex)
