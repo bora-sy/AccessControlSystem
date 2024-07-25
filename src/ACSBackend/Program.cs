@@ -45,7 +45,7 @@ namespace ACSBackend
                 app.MapControllers();
 
                 await DiscordMain.InitDiscord(app.Services);
-                await ACSCommMain.InitACSComm(app.Services);
+                await DeviceCommMain.InitDeviceComm(app.Services);
 
                 app.Run();
             }

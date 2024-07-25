@@ -9,6 +9,8 @@ namespace ACSBackend
     public enum ConfigEnum
     {
         DISCORD_TOKEN,
+        DEVICE_APIKEY,
+        DEVICE_IP
     }
 
     public static class ConfigManager
@@ -24,7 +26,8 @@ namespace ACSBackend
 
         private static string? GetConfig(string key)
         {
-            return DB.Configs.Find(key)?.VALUE;
+            string? res = DB.Configs.Find(key)?.VALUE;
+            return res;
         }
 
         public static string? GetConfig(ConfigEnum c)
