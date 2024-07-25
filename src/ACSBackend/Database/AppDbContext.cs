@@ -7,6 +7,7 @@ namespace ACSBackend.Database
     public class AppDBContext(DbContextOptions<AppDBContext> options) : DbContext(options)
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Config> Configs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) //Define relationships and indexes here
         {

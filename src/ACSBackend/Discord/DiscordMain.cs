@@ -19,7 +19,7 @@ namespace BKDijitalYoklamaBackend.Discord
             {
                 Intents = DiscordIntents.All,
                 TokenType = TokenType.Bot,
-                Token = Config.Discord.Token
+                Token = ConfigManager.GetConfig(ConfigEnum.DISCORD_TOKEN)
             });
 
             var slash = Client.UseSlashCommands(new SlashCommandsConfiguration()

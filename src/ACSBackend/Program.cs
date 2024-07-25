@@ -13,13 +13,12 @@ namespace ACSBackend
         {
             try
             {
-                Config.Initialize();
 
 
                 var builder = WebApplication.CreateBuilder(args);
 
                 #region DB
-                string conn = Config.Database.ConnectionString;
+                string conn = ConfigManager.DBCNCSTR;
                 builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(conn), ServiceLifetime.Transient, ServiceLifetime.Transient);
                 #endregion
 
@@ -29,8 +28,10 @@ namespace ACSBackend
                 builder.Services.AddSwaggerGen(options => options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ACSBackend.xml")));
                 
                 var app = builder.Build();
-                
-                
+
+                ConfigManager.InitConfigManager(app.Services);
+
+
                 // Configure the HTTP request pipeline.
                 if (app.Environment.IsDevelopment())
                 {
