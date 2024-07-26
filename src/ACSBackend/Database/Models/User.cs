@@ -25,5 +25,11 @@ namespace ACSBackend.Database.Models
         public ulong? ACSPin { get; set; }
         public byte[]? ACSCardUID { get; set; }
 
+
+        public bool HasPermission(Permission perm)
+        {
+            return ACSBackend.Utils.Permissions.HasPermission(Permissions, perm);
+        }
+
     }
 }

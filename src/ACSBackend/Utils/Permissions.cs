@@ -8,7 +8,6 @@
         USE_ACTIONS       = 1 << 0,
         ACTION_LOCKUNLOCK = 1 << 1,
         ACTION_DISENGAGE  = 1 << 2,
-        ACTION_MANAGE     = 1 << 3,
 
         MANAGE_PERMS      = 1 << 50,
     }

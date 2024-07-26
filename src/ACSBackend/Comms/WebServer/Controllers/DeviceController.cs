@@ -23,8 +23,14 @@ namespace ACSBackend.Comms.WebServer.Controllers
             return Ok("pong");
         }
 
+        [HttpGet("getdevicemanagepassword")]
+        public IActionResult GetDeviceManagePassword()
+        {
+            return Ok(ConfigManager.GetConfig(ConfigEnum.DEVICE_MANAGE_PASSWORD));
+        }
+
         [HttpPost("setdeviceip")]
-        public IActionResult PostDefault(string ipaddr)
+        public IActionResult SetDeviceIP(string ipaddr)
         {
             if(!IPAddress.TryParse(ipaddr, out IPAddress? IP) || IP == null) return BadRequest("invalid_ip");
 
