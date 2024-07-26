@@ -11,7 +11,7 @@ namespace ACSBackend.Comms
         const int DEVICE_PORT = 80;
 
         private static AppDBContext DB = null!;
-        private static string DeviceAPIKey = null!;
+        public static string DeviceAPIKey { get; private set; } = null!;
 
         public static async Task InitDeviceComm(IServiceProvider services)
         {
@@ -30,7 +30,7 @@ namespace ACSBackend.Comms
             HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, url);
             try
             {
-                msg.Headers.Authorization = new AuthenticationHeaderValue("Bearer", DeviceAPIKey);
+                msg.Headers.Authorization = new AuthenticationHeaderValue("", DeviceAPIKey);
 
                 HttpResponseMessage response = await client.SendAsync(msg);
 

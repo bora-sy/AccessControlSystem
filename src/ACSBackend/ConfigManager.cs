@@ -35,7 +35,7 @@ namespace ACSBackend
             return GetConfig(c.ToString());
         }
 
-        public static void SetConfig(string key, string value)
+        private static void SetConfig(string key, string value)
         {
             var config = DB.Configs.Find(key);
             if (config == null)
@@ -48,6 +48,11 @@ namespace ACSBackend
             }
 
             DB.SaveChanges();
+        }
+
+        public static void SetConfig(ConfigEnum key, string value)
+        {
+            SetConfig(key.ToString(), value);
         }
 
     }

@@ -3,6 +3,7 @@ using ACSBackend.Comms;
 using ACSBackend.Database;
 using BKDijitalYoklamaBackend.Discord;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using System;
 
 namespace ACSBackend
@@ -25,8 +26,36 @@ namespace ACSBackend
                 builder.Services.AddControllers();
 
                 builder.Services.AddEndpointsApiExplorer();
-                builder.Services.AddSwaggerGen(options => options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ACSBackend.xml")));
-                
+                builder.Services.AddSwaggerGen(options =>
+                {
+                    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "ACSBackend.xml"));
+                    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        In = ParameterLocation.Header,
+                        Description = "Please enter Device API Key",
+                        Name = "Authorization",
+                        Type = SecuritySchemeType.ApiKey,
+                        BearerFormat = "API Key",
+                        Scheme = "Bearer",
+                    });
+
+                    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                    {
+                        {
+                          new OpenApiSecurityScheme
+                          {
+                              Reference = new OpenApiReference
+                              {
+                                  Type = ReferenceType.SecurityScheme,
+                                  Id = "Bearer"
+                              }
+                          },
+                          new string[] {}
+                        }
+                    });
+
+                });
+
                 var app = builder.Build();
 
                 ConfigManager.InitConfigManager(app.Services);
@@ -49,7 +78,7 @@ namespace ACSBackend
 
                 app.Run();
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
