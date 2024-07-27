@@ -1,18 +1,23 @@
 #include "IO/CardReader.h"
 #include "IO/Keypad.h"
 #include "IO/LCD.h"
-#include "CoreComm/CoreComm.h"
+#include "CoreComm.h"
 
 void setup()
 {
   Serial.begin(921600);
-  if(!LCD::Initialize()) {Serial.println("LCD initialization failed!"); ESP.restart(); return; }
+  if(!LCD::Initialize())
+  {
+    Serial.println("LCD initialization failed!"); 
+    ESP.restart(); 
+    return;
+  }
+
   LCD::PrintCenter("Starting...");
 
+  CoreComm::Initialize();
   Keypad::Initialize();
   CardReader::Initialize();
-
-
 }
 
 void loop()
