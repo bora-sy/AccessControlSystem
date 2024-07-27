@@ -13,7 +13,7 @@ namespace Keypad
         {'*', '0', '#', 'D'}
     };
 
-    int rowPins[rows] = {33,32,35,34};
+    int rowPins[rows] = {33,32,13,12};
     int colPins[cols] = {14,27,26,25};
 
     void Initialize()
@@ -31,32 +31,55 @@ namespace Keypad
         }
     }
 
-    char GetKey()
+    char GetRawKey()
     {
         char key = '\0';
 
         for (int i = 0; i <cols; i++)
         {
             digitalWrite(colPins[i], HIGH);
+            
 
             for (int j = 0; j < rows; j++)
             {
-                if (digitalRead(rowPins[j]) == HIGH)
+                int pin = rowPins[j];
+                bool res = digitalRead(pin);
+                if (res)
                 {
                     key = keyMap[j][i];
-                    Serial.printf("%c (%d, %d)\n",key, i, j);
                     break;
+                    
                 }
             }
 
             digitalWrite(colPins[i], LOW);
-
-            if (key != '\0')
-            {
-                break;
-            }
         }
 
+
+        return key;
+    }
+
+
+    char lastKey = '\0';
+    ulong lastKeyTime = 0;
+    char GetKey()
+    {
+        char key = GetRawKey();
+
+        if(key == '\0')
+        {
+            if(millis() - lastKeyTime > 10) lastKey = '\0';
+            return '\0';
+        }
+
+        if(key == lastKey)
+        {
+            lastKeyTime = millis();
+            return '\0';
+        }
+
+        lastKey = key;
+        lastKeyTime = millis();
         return key;
     }
 }
