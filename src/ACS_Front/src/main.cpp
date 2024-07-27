@@ -1,15 +1,17 @@
 #include "IO/CardReader.h"
-#include "IO/MelodyPlayer.h"
 #include "IO/Keypad.h"
-
-
-Melody m1;
+#include "IO/LCD.h"
+#include "CoreComm/CoreComm.h"
 
 void setup()
 {
   Serial.begin(921600);
+  if(!LCD::Initialize()) {Serial.println("LCD initialization failed!"); ESP.restart(); return; }
+  LCD::PrintCenter("Starting...");
+
   Keypad::Initialize();
   CardReader::Initialize();
+
 
 }
 
