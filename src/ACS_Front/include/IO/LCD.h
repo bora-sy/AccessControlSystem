@@ -14,6 +14,8 @@ namespace LCD
 
     void Clear();
 
+    void SetBacklight(bool state);
+
 
 
     void Refresh();

@@ -35,8 +35,8 @@ private:
     static void HandleCommand(CommandID commandId, uint8_t *data, uint8_t length);
 
 public:
-    static String feedback;
-    static uint64_t feedbackEnd;
+    static char feedback[33];
+    static uint64_t feedbackEndMS;
 
     static uint64_t configMenuAuth;
 

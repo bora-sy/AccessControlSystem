@@ -29,6 +29,10 @@ namespace ACSCommTest
 
             switch(id)
             {
+                case CommandID.PING:
+                    SendData(CommandID.PONG, new byte[0]);
+                break;
+
                 case CommandID.PASSWORDENTRY:
                     AppendLog($"Password: {BitConverter.ToInt64(data, 0)}");
                 break;
@@ -56,6 +60,14 @@ namespace ACSCommTest
 
         private void buttonConnect_Click(object sender, EventArgs e)
         {
+            if(serialPort1.IsOpen)
+            {
+                serialPort1.Close();
+                serialPort1.Open();
+                AppendLog("Recon");
+                return;
+            }
+
             serialPort1.Open();
 
             Task.Run(async delegate ()
@@ -69,7 +81,11 @@ namespace ACSCommTest
                     for (int i = 0; i < len; i++)
                     {
                         byte? b = ReadByte();
-                        if (b == null) continue;
+                        if (b == null)
+                        {
+                            i--;
+                            continue;
+                        }
                         data[i] = b.Value;
                     }
 
@@ -131,12 +147,12 @@ namespace ACSCommTest
         private void buttonFeedback_Click(object sender, EventArgs e)
         {
             string text = textBoxFeedback.Text;
-            ulong interval = (ulong)numericUpDownFeedbackInterval.Value;
+            ushort interval = (ushort)numericUpDownFeedbackInterval.Value;
 
-            byte[] data = new byte[text.Length + 8];
+            byte[] data = new byte[text.Length + 2];
 
-            Array.Copy(BitConverter.GetBytes(interval), 0, data, 0, 8);
-            Array.Copy(Encoding.ASCII.GetBytes(text), 0, data, 8, text.Length);
+            Array.Copy(BitConverter.GetBytes(interval), 0, data, 0, 2);
+            Array.Copy(Encoding.ASCII.GetBytes(text), 0, data, 2, text.Length);
 
             SendData(CommandID.FEEDBACK, data);
         }

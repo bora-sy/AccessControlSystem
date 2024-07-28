@@ -10,7 +10,6 @@ namespace LCD
 
     bool Initialize()
     {
-        Wire.setClock(400000);
         bool suc = display.init();
 
 
@@ -31,6 +30,12 @@ namespace LCD
     {
         display.clear();
         delay(50);
+    }
+    
+    void SetBacklight(bool state)
+    {
+        if(state) display.backlight();
+        else display.noBacklight();
     }
 
     void Refresh()
@@ -139,6 +144,8 @@ namespace LCD
     {
         PrintCenter((char *)str, clear);
     }
+
+
 
 
     void LCDCharTest(uint8_t triggerButtonPin)

@@ -79,6 +79,11 @@
             // numericUpDownConfigAuth
             // 
             this.numericUpDownConfigAuth.Location = new System.Drawing.Point(443, 150);
+            this.numericUpDownConfigAuth.Maximum = new decimal(new int[] {
+            268435455,
+            1042612833,
+            542101086,
+            0});
             this.numericUpDownConfigAuth.Name = "numericUpDownConfigAuth";
             this.numericUpDownConfigAuth.Size = new System.Drawing.Size(164, 20);
             this.numericUpDownConfigAuth.TabIndex = 3;
@@ -104,6 +109,11 @@
             // numericUpDownFeedbackInterval
             // 
             this.numericUpDownFeedbackInterval.Location = new System.Drawing.Point(443, 313);
+            this.numericUpDownFeedbackInterval.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
             this.numericUpDownFeedbackInterval.Name = "numericUpDownFeedbackInterval";
             this.numericUpDownFeedbackInterval.Size = new System.Drawing.Size(164, 20);
             this.numericUpDownFeedbackInterval.TabIndex = 6;

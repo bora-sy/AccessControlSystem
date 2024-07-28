@@ -2,10 +2,11 @@
 
 // Variables
 
-String CoreComm::feedback;
-uint64_t CoreComm::feedbackEnd;
+char CoreComm::feedback[33];
 
-uint64_t CoreComm::configMenuAuth;
+uint64_t CoreComm::feedbackEndMS = 0;
+
+uint64_t CoreComm::configMenuAuth = 0;
 
 // Initialization
 void CoreComm::Initialize()
@@ -13,9 +14,6 @@ void CoreComm::Initialize()
     CoreSerial.begin(115200, SERIAL_8N1, 16, 17);
 
     xTaskCreate(t_IncomingHandler, "IncomingHandler", 4096, NULL, 0, NULL);
-
-    feedbackEnd = 0;
-    configMenuAuth = 0;
 }
 
 // Actions
@@ -23,6 +21,7 @@ void CoreComm::Initialize()
 bool CoreComm::Ping(uint16_t timeoutMS)
 {
     SendData(CommandID::PING, nullptr, 0);
+    Serial.println("Sent ping");
     uint64_t startMS = millis();
     while (!PongReceived && millis() - startMS < timeoutMS)
     {
@@ -30,6 +29,7 @@ bool CoreComm::Ping(uint16_t timeoutMS)
     }
 
     bool result = PongReceived;
+    Serial.println("Ping result: " + String(result));
     PongReceived = false;
     return result;
 }
@@ -72,12 +72,20 @@ void CoreComm::Config_SetIP(uint8_t ip[4])
 
 void CoreComm::HandleCommand(CommandID commandId, uint8_t *data, uint8_t length)
 {
+    Serial.println("Handling Command");
     switch (commandId)
     {
     case CommandID::PING:
     {
         Serial.println("Received Ping");
         SendData(CommandID::PONG, data, length);
+    }
+    break;
+
+    case CommandID::PONG:
+    {
+        Serial.println("Received Pong");
+        PongReceived = true;
     }
     break;
 
@@ -91,9 +99,14 @@ void CoreComm::HandleCommand(CommandID commandId, uint8_t *data, uint8_t length)
     case CommandID::FEEDBACK:
     {
         Serial.println("Received Feedback");
-        uint16_t durationMS = (data[0] << 8) | data[1];
-        feedback = String((char *)&data[2], length - 2);
-        feedbackEnd = millis() + durationMS;
+
+        uint16_t durationMS = data[0] | (data[1] << 8);
+        Serial.println("Duration: " + String(durationMS));
+        
+        memset(feedback, 0, 33);
+        memcpy(feedback, &data[2], length - 2);
+        
+        feedbackEndMS = millis() + durationMS;
     }
     break;
 
@@ -124,9 +137,10 @@ uint8_t CoreComm::GetIncomingDataLength()
     {
         if (CoreSerial.available())
         {
-            uint8_t len;
-            CoreSerial.readBytes(&len, 1);
-            return len;
+            int rec = CoreSerial.read();
+
+            if(rec == -1) continue;
+            return rec;
         }
 
         delay(5);
@@ -154,7 +168,7 @@ void CoreComm::t_IncomingHandler(void *args)
     {
         uint8_t len = GetIncomingDataLength();
         uint8_t data[len];
-        GetIncomingData(data, len);
+        uint8_t dataLen = GetIncomingData(data, len);
 
         HandleCommand((CommandID)data[0], &data[1], len - 1);
         delay(5);
