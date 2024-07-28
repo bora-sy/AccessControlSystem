@@ -55,10 +55,8 @@ void CoreComm::CardEntry(uint8_t cardUID[10])
 void CoreComm::PlayTone(uint16_t freq, uint16_t duration)
 {
     uint8_t data[4];
-    data[0] = (uint8_t)(freq >> 8);
-    data[1] = (uint8_t)(freq & 0xFF);
-    data[2] = (uint8_t)(duration >> 8);
-    data[3] = (uint8_t)(duration & 0xFF);
+    memcpy(data, &freq, 2);
+    memcpy(data + 2, &duration, 2);
 
     SendData(CommandID::PLAYTONE, data, 4);
 }

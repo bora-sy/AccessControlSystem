@@ -3,6 +3,11 @@
 #include "IO/LCD.h"
 #include "CoreComm.h"
 
+#define IGNORE_CORE_PING
+
+#define PASSWORD_TIMEOUT_MS 30000
+
+
 void setup()
 {
   Serial.begin(921600);
@@ -21,6 +26,8 @@ void setup()
   CardReader::Initialize();
 
   bool res = CoreComm::Ping(1000);
+
+  #ifndef IGNORE_CORE_PING
   if(!res)
   {
     Serial.println("Core Ping failed!");
@@ -29,6 +36,7 @@ void setup()
     ESP.restart();
     return;
   }
+  #endif
 
   Serial.println("Loop");
   LCD::Clear();
@@ -52,12 +60,15 @@ inline void HandleFeedback()
 
     while (CoreComm::feedbackEndMS > millis())
     {
+      delay(5);
+      /*
       char key = Keypad::GetKey();
       if(key != 0)
       {
         CoreComm::feedbackEndMS = 0;
         return;
       }
+      */
     }
     
   }
@@ -74,14 +85,101 @@ inline void HandleCardEntry()
   if(card.IsEmpty()) return;
   
   CoreComm::CardEntry(card.UID);
-  LCD::PrintCenter("Kart Okundu");
+  LCD::PrintCenter("Card Read");
   delay(200);
 }
 
+
+ulong lastPasswordKeyInput = 0;
 inline void HandlePasswordEntry()
 {
+  char key = Keypad::GetKey();
+  if(key == 0) return;
 
+  uint8_t nextIndex = 0;
+  char password[17];
+  char maskedPassword[17];
+  memset(password, 0, 17);
+  memset(maskedPassword, 0, 17);
+
+  bool passwordMasked = true;
+  
+
+  if(key >= 48 && key <= 57)
+  {
+    password[nextIndex] = key;
+    maskedPassword[nextIndex] = '*';
+    nextIndex++;
+    LCD::PrintCenterRow("Password", 0);
+    LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
+    lastPasswordKeyInput = millis();
+    CoreComm::PlayTone(1000, 100); // TODO: Set tone
+  }
+  else return;
+
+
+  while (true)
+  {
+    if(lastPasswordKeyInput + PASSWORD_TIMEOUT_MS < millis())
+    {
+      Serial.println("Timeout");
+      return;
+    }
+
+    key = Keypad::GetKey();
+    if(key == 0) continue;
+
+    if(key == 'A') // Backspace
+    {
+      if(nextIndex == 0) return;
+
+      password[nextIndex-1] = 0;
+      maskedPassword[nextIndex-1] = 0;
+      nextIndex--;
+      LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
+      lastPasswordKeyInput = millis();
+      CoreComm::PlayTone(800, 100); // TODO: Set tone
+      continue;
+    }
+    else if (key == 'D') // Toggle Mask
+    {
+      passwordMasked = !passwordMasked;
+      LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
+      lastPasswordKeyInput = millis();
+      continue;
+    }
+    else if (key == '#') // Submit
+    {
+      if(nextIndex == 0) return;
+      CoreComm::PasswordEntry(atoll(password));
+      LCD::PrintCenter("Password Submitted");
+      delay(200);
+      return;
+    }
+    else if ((key < 48 || key > 57)) continue;
+
+    if(nextIndex >= 16) continue;
+    
+
+    password[nextIndex] = key;
+    maskedPassword[nextIndex] = '*';
+    nextIndex++;
+    lastPasswordKeyInput = millis();
+    CoreComm::PlayTone(1000, 100); // TODO: Set tone
+    Serial.println(password);
+
+    LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
+  }
+  
+
+
+
+
+  
+  char passwordBuf[16];
+  memset(passwordBuf, 0, 16);
 }
+
 /*
 void setup()
 {
