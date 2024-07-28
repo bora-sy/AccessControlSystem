@@ -18,11 +18,18 @@ void setup()
   CoreComm::Initialize();
   Keypad::Initialize();
   CardReader::Initialize();
+
+  bool res = CoreComm::Ping(1000);
+  if(!res)
+  {
+    LCD::PrintCenter("Core Ping failed!");
+    delay(1000);
+    ESP.restart();
+    return;
+  }
 }
 
 void loop()
 {
-  Card c = CardReader::ReadCard();
-  if(c.IsEmpty()) return;
-  Serial.printf("Card: %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n", c.UID[0], c.UID[1], c.UID[2], c.UID[3], c.UID[4], c.UID[5], c.UID[6], c.UID[7], c.UID[8], c.UID[9]);
+  
 }
