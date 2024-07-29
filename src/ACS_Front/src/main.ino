@@ -82,7 +82,7 @@ inline void HandleConfigMenu()
   LCD::PrintCenterRow("Enter Backend IP", 0);
   char ipStr[16];
   memset(ipStr, 0, 16);
-  
+
   uint8_t nextChar = 0;
 
   while (true)
@@ -92,9 +92,45 @@ inline void HandleConfigMenu()
     
     if(key >= 48 && key <= 57) // numeric
     {
+      if(nextChar >= 15) continue;
       if(nextChar == 3 || nextChar == 7 || nextChar == 11) ipStr[nextChar++] = '.';
       ipStr[nextChar++] = key;
       LCD::PrintCenterRow(ipStr, 1);
+    }
+    else if(key == 'A') // Backspace
+    {
+      if(nextChar == 0) continue;
+      ipStr[--nextChar] = 0;
+      LCD::PrintCenterRow(ipStr, 1);
+    }
+    else if(key == '#') // Submit
+    {
+      if(nextChar < 15) continue;
+      uint ip[4];
+      sscanf(ipStr, "%d.%d.%d.%d", &ip[0], &ip[1], &ip[2], &ip[3]);
+      Serial.printf("IP: %d.%d.%d.%d\n", ip[0], ip[1], ip[2], ip[3]);
+      
+      for(int i = 0; i<4; i++) 
+      if(ip[i] > 255)
+      {
+        LCD::PrintCenter("Invalid IP");
+        delay(2000);
+        return;
+      }
+
+      uint8_t ip_formatted[] = {ip[0], ip[1], ip[2], ip[3]};
+
+      CoreComm::Config_SetIP(ip_formatted);
+      LCD::PrintCenter("IP Submitted");
+      delay(200);
+
+      CoreComm::configMenuAuth = 0;
+      return;
+    }
+    else if(key == '*') // Cancel
+    {
+      CoreComm::configMenuAuth = 0;
+      return;
     }
     
   }

@@ -63,7 +63,10 @@ void CoreComm::PlayTone(uint16_t freq, uint16_t duration)
 
 void CoreComm::Config_SetIP(uint8_t ip[4])
 {
-    SendData(CommandID::CONFIG_SETIP, ip, 4);
+    uint8_t buf[8 + 4];
+    memcpy(buf, &CoreComm::configMenuAuth, 8);
+    memcpy(&buf[8], ip, 4);
+    SendData(CommandID::CONFIG_SETIP, buf, 12);
 }
 
 // Handler

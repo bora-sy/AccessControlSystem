@@ -46,7 +46,7 @@
             // serialPort1
             // 
             this.serialPort1.BaudRate = 921600;
-            this.serialPort1.PortName = "COM10";
+            this.serialPort1.PortName = "COM7";
             // 
             // richTextBox1
             // 
