@@ -76,7 +76,30 @@ inline void HandleFeedback()
 
 inline void HandleConfigMenu()
 {
+
   if(CoreComm::configMenuAuth == 0) return;
+
+  LCD::PrintCenterRow("Enter Backend IP", 0);
+  char ipStr[16];
+  memset(ipStr, 0, 16);
+  
+  uint8_t nextChar = 0;
+
+  while (true)
+  {
+    char key = Keypad::GetKey();
+    if(key == 0) continue;
+    
+    if(key >= 48 && key <= 57) // numeric
+    {
+      if(nextChar == 3 || nextChar == 7 || nextChar == 11) ipStr[nextChar++] = '.';
+      ipStr[nextChar++] = key;
+      LCD::PrintCenterRow(ipStr, 1);
+    }
+    
+  }
+  
+
 }
 
 inline void HandleCardEntry()
