@@ -9,5 +9,6 @@ class Lock
     public:
     static void Initialize();
     static void SetSolenoid(bool state);
-    static bool IsDoorLocked();
+    static bool GetSolenoid();
+    static bool IsDoorClosed();
 };

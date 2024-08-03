@@ -17,6 +17,7 @@ enum Action
 enum DoorState
 {
     LOCKED = 0,
+    UNLOCKED_WAITINGDOOROPEN,
     UNLOCKED,
     DISENGAGED
 };
@@ -29,7 +30,7 @@ class ActionHandler
     static ulong Time_DoorLocked;
 
     static DoorState CurrentState;
-
+    
     static void t_DoorHandler(void *args);
 
     static void AlarmCheck();
