@@ -24,6 +24,7 @@ namespace MelodyPlayer
     
     void Initialize()
     {
+        ledcSetup(BUZZER_CHANNEL, 5000, 8);
         ledcAttachPin(PIN_BUZZER, BUZZER_CHANNEL);
 
         xTaskCreate(t_melodyplayer, "MelodyPlayer", 2048, NULL, 1, NULL);
@@ -34,7 +35,7 @@ namespace MelodyPlayer
     
     void t_melodyplayer(void* args)
     {
-        while(true)
+        for(;;)
         {
             if(melodySlot.toneCount == 0)
             {
