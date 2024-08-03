@@ -13,7 +13,7 @@ void Lock::SetSolenoid(bool state)
     digitalWrite(PIN_SOLENOID, state);
 }
 
-bool Lock::IsDoorOpen()
+bool Lock::IsDoorLocked()
 {
     return digitalRead(PIN_DOORLIMITSWITCH);
 }

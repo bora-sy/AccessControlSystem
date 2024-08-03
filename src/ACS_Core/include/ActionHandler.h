@@ -1,5 +1,9 @@
 #pragma once
 #include <Arduino.h>
+#include "IO/Lock.h"
+#include "IO/MelodyPlayer.h"
+
+#define DOOR_LOCK_TIMEOUT 5000
 
 enum Action
 {
@@ -10,13 +14,31 @@ enum Action
     DISENGAGE
 };
 
+enum DoorState
+{
+    LOCKED = 0,
+    UNLOCKED,
+    DISENGAGED
+};
+
 class ActionHandler
 {
     private:
-    static void t_DoorHandler(void *args);
 
     static Action TargetAction;
     static ulong Time_DoorLocked;
+
+    static DoorState CurrentState;
+
+    static void t_DoorHandler(void *args);
+
+    static void AlarmCheck();
+
+    static void action_Lock();
+    static void action_Unlock();
+    static void action_Engage();
+    static void action_Disengage();
+
 
     public:
     static void Initialize();

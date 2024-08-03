@@ -16,9 +16,21 @@ struct Melody
     void AddRest(uint32_t duration);
 };
 
-namespace MelodyPlayer
-{
-    void Initialize();
 
-    void PlayMelody(Melody melody);
-}
+class MelodyPlayer
+{
+    private:
+    static bool alarm;
+    static Melody melodySlot;
+
+    static void t_melodyplayer(void *args);
+
+    static void alarmCycle();
+    public:
+    
+    static void Initialize();
+
+    static void PlayMelody(Melody melody);
+
+    static void SetAlarm(bool state);
+};
