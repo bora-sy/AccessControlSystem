@@ -60,7 +60,7 @@ void ActionHandler::t_DoorHandler(void *args)
         if(CurrentState == UNLOCKED_WAITINGDOOROPEN && !Lock::IsDoorClosed())
         {
             CurrentState = UNLOCKED;
-            Serial.println("Door Opened");
+            Serial.println("Door Unlocked");
         }
 
         switch (TargetAction)
@@ -79,7 +79,7 @@ void ActionHandler::t_DoorHandler(void *args)
 void ActionHandler::AlarmCheck()
 {
     if(CurrentState != LOCKED || Lock::IsDoorClosed() || millis() - Time_DoorLocked < DOOR_LOCK_TIMEOUT) return;
-
+    Serial.println("ALARM");
     MelodyPlayer::SetAlarm(true);
     
     for(;;)
@@ -95,7 +95,7 @@ void ActionHandler::action_Lock()
     MelodyPlayer::PlayMelody(melody_Lock);
     Lock::SetSolenoid(false);
     
-    Serial.println("Locked");
+    Serial.println("Door Locked");
 }
 
 void ActionHandler::action_Unlock()

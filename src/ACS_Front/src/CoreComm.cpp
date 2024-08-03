@@ -185,7 +185,7 @@ void CoreComm::t_IncomingHandler(void *args)
     while (true)
     {
         uint8_t len = GetIncomingDataLength();
-        Serial.printf("Len: %d\n", len);
+        if(len == 0) continue;
         uint8_t data[len];
         uint8_t dataLen = GetIncomingData(data, len);
 

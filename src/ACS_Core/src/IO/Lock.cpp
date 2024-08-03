@@ -27,6 +27,5 @@ bool Lock::IsDoorClosed()
     if(lastState == read) return read;
     if(millis() - lastChange < 100) return lastState;
     lastState = read;
-    Serial.println(read ? "Door is locked" : "Door is unlocked");
     return read;
 }

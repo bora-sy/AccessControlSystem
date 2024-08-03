@@ -3,7 +3,7 @@
 #include "IO/LCD.h"
 #include "CoreComm.h"
 
-#define IGNORE_CORE_PING
+//#define IGNORE_CORE_PING
 
 #define PASSWORD_TIMEOUT_MS 30000
 
@@ -44,14 +44,6 @@ void setup()
 
 void loop()
 {
-  
-  bool res = CoreComm::Ping(1000);
-
-  LCD::PrintCenterRow(String(res));
-  delay(3000);
-  LCD::Clear();
-
-  return;
   HandleFeedback();
   HandleConfigMenu();
   HandleCardEntry();
