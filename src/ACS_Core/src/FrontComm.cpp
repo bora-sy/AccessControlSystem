@@ -4,7 +4,7 @@
 // Initialization
 void FrontComm::Initialize()
 {
-    FrontSerial.begin(115200, SERIAL_8N1, 16, 17);
+    FrontSerial.begin(9600, SERIAL_8N1, 16, 17);
 
     xTaskCreate(t_IncomingHandler, "IncomingHandler", 4096, NULL, 0, NULL);
 }
@@ -136,14 +136,25 @@ uint8_t FrontComm::GetIncomingDataLength()
 
 uint8_t FrontComm::GetIncomingData(uint8_t *data, uint8_t length)
 {
+    ulong lastByteReceive = millis();
+
     uint8_t nextByte = 0;
     while (nextByte < length)
     {
         if (FrontSerial.available())
         {
             nextByte += FrontSerial.readBytes(&data[nextByte], length - nextByte);
+            lastByteReceive = millis();
         }
+
         delay(5);
+
+        if(millis() - lastByteReceive > 1000)
+        {
+            FrontSerial.flush();
+            Serial.println("SERIAL COMM TIMEOUT, FLUSHED");
+            return 0;
+        }
     }
 
     return nextByte;
@@ -154,8 +165,13 @@ void FrontComm::t_IncomingHandler(void *args)
     while (true)
     {
         uint8_t len = GetIncomingDataLength();
+        Serial.printf("Len: %d\n", len);
+        if(len == 0) continue;
+
         uint8_t data[len];
         uint8_t dataLen = GetIncomingData(data, len);
+
+        if(dataLen == 0) continue;
 
         HandleCommand((CommandID)data[0], &data[1], len - 1);
         delay(5);

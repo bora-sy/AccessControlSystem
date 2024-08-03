@@ -11,7 +11,7 @@ uint64_t CoreComm::configMenuAuth = 0;
 // Initialization
 void CoreComm::Initialize()
 {
-    CoreSerial.begin(115200, SERIAL_8N1, 16, 17);
+    CoreSerial.begin(9600, SERIAL_8N1, 16, 17);
 
     xTaskCreate(t_IncomingHandler, "IncomingHandler", 4096, NULL, 0, NULL);
 }
@@ -119,7 +119,7 @@ void CoreComm::HandleCommand(CommandID commandId, uint8_t *data, uint8_t length)
             ESP.restart();
             return;
         }
-        
+
         Serial.println("Received ConfigMenu");
         configMenuAuth = *((uint64_t *)data);
     }
@@ -157,14 +157,24 @@ uint8_t CoreComm::GetIncomingDataLength()
 
 uint8_t CoreComm::GetIncomingData(uint8_t *data, uint8_t length)
 {
+    ulong lastByteReceive = millis();
+
     uint8_t nextByte = 0;
     while (nextByte < length)
     {
         if (CoreSerial.available())
         {
             nextByte += CoreSerial.readBytes(&data[nextByte], length - nextByte);
+            lastByteReceive = millis();
         }
         delay(5);
+
+        if(millis() - lastByteReceive > 1000)
+        {
+            CoreSerial.flush();
+            Serial.println("SERIAL COMM TIMEOUT, FLUSHED");
+            return 0;
+        }
     }
 
     return nextByte;
@@ -175,8 +185,11 @@ void CoreComm::t_IncomingHandler(void *args)
     while (true)
     {
         uint8_t len = GetIncomingDataLength();
+        Serial.printf("Len: %d\n", len);
         uint8_t data[len];
         uint8_t dataLen = GetIncomingData(data, len);
+
+        if(dataLen == 0) continue;
 
         HandleCommand((CommandID)data[0], &data[1], len - 1);
         delay(5);
