@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 #include <HardwareSerial.h>
+#include "ActionHandler.h"
 
 enum CommandID : uint8_t
 {
@@ -26,7 +27,7 @@ class FrontComm
 {
 private:
 
-    static HardwareSerial CoreSerial;
+    static HardwareSerial FrontSerial;
     static bool PongReceived;
 
     static void SendData(CommandID commandId, uint8_t *data, uint8_t length);
@@ -39,4 +40,6 @@ public:
     static void Initialize();
     static bool Ping(uint16_t timeoutMS);
     static void Reset();
+    static void SendFeedback(uint16_t durationMS, char* feedback);
+    static void OpenConfigMenu(uint64_t auth);
 };

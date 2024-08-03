@@ -113,6 +113,13 @@ void CoreComm::HandleCommand(CommandID commandId, uint8_t *data, uint8_t length)
 
     case CommandID::CONFIGMENU:
     {
+        if(length != 8)
+        {
+            Serial.println("Invalid ConfigMenu length.. RESTARTING");
+            ESP.restart();
+            return;
+        }
+        
         Serial.println("Received ConfigMenu");
         configMenuAuth = *((uint64_t *)data);
     }
