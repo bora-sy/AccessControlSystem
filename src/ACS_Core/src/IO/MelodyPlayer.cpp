@@ -50,7 +50,10 @@ void MelodyPlayer::t_melodyplayer(void *args)
         for (int i = 0; i < currentMelody.toneCount; i++)
         {
             if (melodySlot.toneCount != 0)
+            {
+                ledcWriteTone(BUZZER_CHANNEL, 0);
                 break;
+            }
 
             ledcWriteTone(BUZZER_CHANNEL, currentMelody.tones[i]);
             delay(currentMelody.toneDurations[i]);

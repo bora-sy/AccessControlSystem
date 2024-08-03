@@ -40,6 +40,11 @@ class ActionHandler
     static void action_Disengage();
 
 
+    static Melody melody_Unlock;
+    static Melody melody_Lock;
+    static void InitializeMelodies();
+
+
     public:
     static void Initialize();
     static void ExecuteAction(Action act);

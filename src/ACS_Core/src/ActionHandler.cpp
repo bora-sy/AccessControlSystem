@@ -5,12 +5,30 @@ DoorState ActionHandler::CurrentState = LOCKED;
 
 ulong ActionHandler::Time_DoorLocked = 0;
 
+Melody ActionHandler::melody_Unlock;
+Melody ActionHandler::melody_Lock;
+
 void ActionHandler::Initialize()
 {
-    xTaskCreate(t_DoorHandler, "DoorHandler", 4096, NULL, 1, NULL);
+    InitializeMelodies();
 
-    bool isDoorLocked = Lock::IsDoorLocked();
-    CurrentState = isDoorLocked ? LOCKED : UNLOCKED;
+    bool doorLocked = Lock::IsDoorLocked();
+    CurrentState = doorLocked ? LOCKED : UNLOCKED;
+
+    if(CurrentState == UNLOCKED) action_Unlock();
+
+    xTaskCreate(t_DoorHandler, "DoorHandler", 4096, NULL, 1, NULL);
+}
+
+void ActionHandler::InitializeMelodies()
+{
+    melody_Unlock.AddNote(2000, 150);
+    melody_Unlock.AddNote(1000, 100);
+    melody_Unlock.AddRest(200);
+    melody_Unlock.AddNote(1000, 200);
+
+    melody_Lock.AddNote(1500, 1000);
+    melody_Lock.AddNote(750, 200);
 }
 
 void ActionHandler::ExecuteAction(Action act)
@@ -18,17 +36,25 @@ void ActionHandler::ExecuteAction(Action act)
     TargetAction = act;
 }
 
+
 //----------------------------------------------------------
 
 void ActionHandler::t_DoorHandler(void *args)
 {
     for (;;)
     {
+
         AlarmCheck();
 
         if(CurrentState == LOCKED && !Lock::IsDoorLocked() && millis() - Time_DoorLocked < DOOR_LOCK_TIMEOUT)
         {
             action_Unlock();
+        }
+
+        if(CurrentState == UNLOCKED && Lock::IsDoorLocked())
+        {
+            action_Lock();
+            Time_DoorLocked = millis();
         }
 
         switch (TargetAction)
@@ -40,6 +66,7 @@ void ActionHandler::t_DoorHandler(void *args)
         }
 
         TargetAction = NONE;
+        delay(10);
     }
 }
 
@@ -53,5 +80,33 @@ void ActionHandler::AlarmCheck()
     {
         delay(10);
     }
+
+}
+
+void ActionHandler::action_Lock()
+{
+    CurrentState = LOCKED;
+    MelodyPlayer::PlayMelody(melody_Lock);
+    Lock::SetSolenoid(false);
+    
+    Serial.println("Locked");
+}
+
+void ActionHandler::action_Unlock()
+{
+    CurrentState = UNLOCKED;
+    MelodyPlayer::PlayMelody(melody_Unlock);
+    Lock::SetSolenoid(true);
+
+    Serial.println("Unlocked");
+}
+
+void ActionHandler::action_Engage()
+{
+
+}
+
+void ActionHandler::action_Disengage()
+{
 
 }

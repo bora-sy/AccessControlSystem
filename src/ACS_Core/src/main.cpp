@@ -1,7 +1,7 @@
 #include "IO/MelodyPlayer.h"
 #include "IO/LCD.h"
 #include "IO/Lock.h"
-
+#include "ActionHandler.h"
 
 void setup()
 {
@@ -9,9 +9,12 @@ void setup()
   LCD::Initialize();
   MelodyPlayer::Initialize();
   Lock::Initialize();
+  ActionHandler::Initialize();
+
 }
+
+bool oldState = false;
 
 void loop()
 {
-  
 }
