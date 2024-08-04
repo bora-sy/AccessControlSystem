@@ -4,7 +4,7 @@
 bool DataSaving::Initialize()
 {
     bool suc = LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED);
-    if (!suc) ESP_LOGV(TAG, "Failed to initialize LittleFS");
+    if (!suc) ESP_LOGE(TAG, "Failed to initialize LittleFS");
     ESP_LOGI(TAG, "LittleFS Initialized");
     return suc;
 }
@@ -43,7 +43,7 @@ size_t DataSaving::WriteData(const char *path, const uint8_t *data, const size_t
     File file = LittleFS.open(path, "w");
     if (!file)
     {
-        ESP_LOGE(TAG, "Failed to open file \"%s\" for writing", path);
+        ESP_LOGW(TAG, "Failed to open file \"%s\" for writing", path);
         return -1;
     }
 
@@ -62,7 +62,7 @@ size_t DataSaving::ReadData(const char *path, uint8_t *data, const size_t len)
     File file = LittleFS.open(path, "r");
     if (!file)
     {
-        ESP_LOGE(TAG, "Failed to open file \"%s\" for reading", path);
+        ESP_LOGW(TAG, "Failed to open file \"%s\" for reading", path);
         return -1;
     }
 
