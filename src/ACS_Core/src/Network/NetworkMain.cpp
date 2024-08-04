@@ -28,7 +28,7 @@ bool NetworkMain::Initialize()
         return false;
     }
 
-    ESP_LOGI(TAG, "Connected to WiFi");
+    ESP_LOGI(TAG, "Connected to WiFi (IP Address: %s)", WiFi.localIP().toString().c_str());
     return true;
 }
 

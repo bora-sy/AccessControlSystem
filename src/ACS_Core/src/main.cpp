@@ -5,6 +5,7 @@
 #include "FrontComm.h"
 #include "DataSaving.h"
 #include "Network/NetworkMain.h"
+#include "Network/OTA.h"
 
 void setup()
 {
@@ -29,6 +30,14 @@ void setup()
     return;
   }
 
+  if(!OTA::Initialize())
+  {
+    LCD::Print("OTA failed to initialize");
+    delay(5000);
+    ESP.restart();
+    return;
+  }
+
 
 
   FrontComm::Initialize();
@@ -36,9 +45,11 @@ void setup()
   Lock::Initialize();
   ActionHandler::Initialize();
 
+
 }
 
 void loop()
 {
-  
+  OTA::Loop();
+  delay(100);
 }
