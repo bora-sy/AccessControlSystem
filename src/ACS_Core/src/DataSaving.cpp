@@ -3,6 +3,7 @@
 
 bool DataSaving::Initialize()
 {
+    ESP_LOGI(TAG, "Initializing LittleFS");
     bool suc = LittleFS.begin(FORMAT_LITTLEFS_IF_FAILED);
     if (!suc) ESP_LOGE(TAG, "Failed to initialize LittleFS");
     ESP_LOGI(TAG, "LittleFS Initialized");
