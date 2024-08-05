@@ -31,9 +31,38 @@ void ActionHandler::InitializeMelodies()
     melody_Lock.AddNote(750, 200);
 }
 
+
 void ActionHandler::ExecuteAction(Action act)
 {
     TargetAction = act;
+}
+
+ActionRequestResult ActionHandler::Lock()
+{
+    if(CurrentState == LOCKED) return ALREADY_LOCKED;
+    ExecuteAction(LOCK);
+    return SUCCESS;
+}
+
+ActionRequestResult ActionHandler::Unlock()
+{
+    if(CurrentState == UNLOCKED) return ALREADY_UNLOCKED;
+    ExecuteAction(UNLOCK);
+    return SUCCESS;
+}
+
+ActionRequestResult ActionHandler::Engage()
+{
+    if(CurrentState != DISENGAGED) return ALREADY_ENGAGED;
+    ExecuteAction(ENGAGE);
+    return SUCCESS;
+}
+
+ActionRequestResult ActionHandler::Disengage()
+{
+    if(CurrentState == DISENGAGED) return ALREADY_DISENGAGED;
+    ExecuteAction(DISENGAGE);
+    return SUCCESS;
 }
 
 

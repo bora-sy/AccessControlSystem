@@ -6,7 +6,7 @@
 #include "DataSaving.h"
 #include "Network/NetworkMain.h"
 #include "Network/OTA.h"
-
+#include "Network/WebServer.h"
 
 void InitCritical(bool (*initFunc)(), const char* loadingText, const char* errorText)
 {
@@ -32,6 +32,7 @@ void setup()
 
   InitCritical(DataSaving::Initialize, "Initializing DataSaving", "DataSaving failed to initialize");
   InitCritical(NetworkMain::Initialize, "Initializing NetworkMain", "NetworkMain failed to initialize");
+  InitCritical(WebServer::Initialize, "Initializing WebServer", "WebServer failed to initialize");
   InitCritical(OTA::Initialize, "Initializing OTA", "OTA failed to initialize");
 
 

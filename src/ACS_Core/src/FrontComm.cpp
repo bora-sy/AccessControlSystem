@@ -95,7 +95,7 @@ void FrontComm::HandleCommand(CommandID commandId, uint8_t *data, uint8_t length
 
         Serial.println("Received password entry: " + String(password));
         SendFeedback(2000, "Correct Password");
-        ActionHandler::ExecuteAction(Action::UNLOCK);
+        ActionHandler::Unlock();
     break;
 
     case CommandID::CARDENTRY:
@@ -109,7 +109,7 @@ void FrontComm::HandleCommand(CommandID commandId, uint8_t *data, uint8_t length
     memcpy(cardUID, data, 10);
     Serial.printf("Received card entry: %02X%02X%02X%02X%02X%02X%02X%02X%02X%02X\n", cardUID[0], cardUID[1], cardUID[2], cardUID[3], cardUID[4], cardUID[5], cardUID[6], cardUID[7], cardUID[8], cardUID[9]);
     SendFeedback(2000, "Correct Card");
-    ActionHandler::ExecuteAction(Action::UNLOCK);
+    ActionHandler::Unlock();
     break;
 
     }

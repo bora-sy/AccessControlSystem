@@ -14,6 +14,15 @@ enum Action
     DISENGAGE
 };
 
+enum ActionRequestResult
+{
+    SUCCESS = 0,
+    ALREADY_LOCKED,
+    ALREADY_UNLOCKED,
+    ALREADY_ENGAGED,
+    ALREADY_DISENGAGED,
+};
+
 enum DoorState
 {
     LOCKED = 0,
@@ -21,6 +30,7 @@ enum DoorState
     UNLOCKED,
     DISENGAGED
 };
+
 
 class ActionHandler
 {
@@ -40,6 +50,8 @@ class ActionHandler
     static void action_Engage();
     static void action_Disengage();
 
+    static void ExecuteAction(Action act);
+
 
     static Melody melody_Unlock;
     static Melody melody_Lock;
@@ -48,5 +60,9 @@ class ActionHandler
 
     public:
     static void Initialize();
-    static void ExecuteAction(Action act);
+
+    static ActionRequestResult Lock();
+    static ActionRequestResult Unlock();
+    static ActionRequestResult Engage();
+    static ActionRequestResult Disengage();
 };
