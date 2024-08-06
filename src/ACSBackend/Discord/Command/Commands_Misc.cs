@@ -5,6 +5,8 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Entities;
 using ACSBackend.Discord.DiscordUtils;
+using ACSBackend.Comms;
+using static ACSBackend.Comms.DeviceCommMain;
 
 namespace ACSBackend.Discord.Commands
 {

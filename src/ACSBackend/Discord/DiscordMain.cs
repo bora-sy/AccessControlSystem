@@ -33,6 +33,7 @@ namespace BKDijitalYoklamaBackend.Discord
             });
 
             slash.RegisterCommands<Commands_Misc>();
+            slash.RegisterCommands<Commands_ACSBasic>();
 
             await Client.ConnectAsync();
         }

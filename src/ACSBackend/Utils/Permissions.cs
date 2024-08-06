@@ -6,7 +6,7 @@
         NONE = 0,
 
         USE_ACTIONS       = 1 << 0,
-        ACTION_LOCKUNLOCK = 1 << 1,
+        ACTION_UNLOCK = 1 << 1,
         ACTION_DISENGAGE  = 1 << 2,
 
         MANAGE_PERMS      = 1 << 50,

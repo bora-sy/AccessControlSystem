@@ -3,6 +3,7 @@ using System.Net.Http.Headers;
 using System.Net;
 using System.Text.Json.Nodes;
 using System.Text;
+using ACSBackend.Utils;
 
 namespace ACSBackend.Comms
 {
@@ -21,6 +22,9 @@ namespace ACSBackend.Comms
 
             CoreCommKey = ConfigManager.GetConfig(ConfigEnum.COREDEVICE_COMMKEY)!;
             FrontCommKey = ConfigManager.GetConfig(ConfigEnum.FRONTDEVICE_COMMKEY)!;
+
+            Permission perms = 0;
+            perms.AddPermissions(Permission.USE_ACTIONS, Permission.ACTION_UNLOCK, Permission.ACTION_DISENGAGE, Permission.MANAGE_PERMS);
         }
 
         public static class Core

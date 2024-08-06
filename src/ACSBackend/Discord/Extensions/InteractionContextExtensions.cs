@@ -26,5 +26,30 @@ namespace ACSBackend.Discord.Extensions
             return ctx.EditResponseAsync(new DiscordEmbedBuilder() { Color = color, Title = title, Description = description });
         }
 
+
+
+
+
+        public static Task CreateResponseAsync(this InteractionContext ctx, DiscordMessageBuilder builder)
+        {
+            return ctx.CreateResponseAsync(DSharpPlus.InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder(builder));
+        }
+
+        public static Task CreateResponseAsync(this InteractionContext ctx, string msg)
+        {
+            return ctx.CreateResponseAsync(new DiscordMessageBuilder() { Content = msg });
+        }
+
+        public static Task CreateResponseAsync(this InteractionContext ctx, params DiscordEmbedBuilder[] embeds)
+        {
+            return ctx.CreateResponseAsync(new DiscordMessageBuilder().AddEmbeds(embeds.Select(x => x.Build())));
+        }
+
+        public static Task CreateResponseAsync(this InteractionContext ctx, DiscordColor color, string title, string description)
+        {
+            return ctx.CreateResponseAsync(new DiscordEmbedBuilder() { Color = color, Title = title, Description = description });
+        }
+
+
     }
 }
