@@ -3,6 +3,29 @@
 
 bool NetworkMain::Initialize()
 {
+
+    Melody startMelody;
+    startMelody.AddNote(1500, 100);
+    startMelody.AddRest(50);
+    startMelody.AddNote(1500, 100);
+
+    Melody connectedMelody;
+    connectedMelody.AddNote(1500, 100);
+    connectedMelody.AddRest(50);
+    connectedMelody.AddNote(1500, 100);
+    connectedMelody.AddRest(50);
+    connectedMelody.AddNote(1500, 100);
+
+    Melody failMelody;
+    failMelody.AddNote(600, 200);
+    failMelody.AddRest(100);
+    failMelody.AddNote(600, 200);
+    failMelody.AddRest(100);
+    failMelody.AddNote(600, 200);
+
+
+    MelodyPlayer::PlayMelody(startMelody);
+
     WiFiConfig config = Config::wifiConfig;
 
 
@@ -18,11 +41,14 @@ bool NetworkMain::Initialize()
 
     if(WiFi.status() != WL_CONNECTED)
     {
+        MelodyPlayer::PlayMelody(failMelody);
         ESP_LOGE(TAG, "Failed to connect to WiFi");
         return false;
     }
 
     ESP_LOGI(TAG, "Connected to WiFi (IP Address: %s)", WiFi.localIP().toString().c_str());
+    MelodyPlayer::PlayMelody(connectedMelody);
+    delay(400);
     return true;
 }
 

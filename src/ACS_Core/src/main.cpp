@@ -16,9 +16,9 @@ void InitCritical(bool (*initFunc)(), const char* loadingText, const char* error
   if (!suc)
   {
     LCD::PrintCenter(errorText);
-    delay(3000);
-    LCD::PrintCenter("Restarting");
     delay(1500);
+    LCD::PrintCenter("Restarting");
+    delay(800);
     ESP.restart();
   }
 }
@@ -27,6 +27,14 @@ void setup()
 {
   Serial.begin(921600);
   Serial.println("Serial Begin");
+  MelodyPlayer::Initialize();
+
+
+  Melody startMelody;
+  startMelody.AddNote(1000, 250);
+  startMelody.AddRest(100);
+  startMelody.AddNote(2000, 150);
+  MelodyPlayer::PlayMelody(startMelody);
 
   LCD::Initialize();
 
@@ -39,7 +47,6 @@ void setup()
 
 
   FrontComm::Initialize();
-  MelodyPlayer::Initialize();
   Lock::Initialize();
   ActionHandler::Initialize();
 

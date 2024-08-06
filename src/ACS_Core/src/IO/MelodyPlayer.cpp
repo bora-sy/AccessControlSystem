@@ -42,7 +42,24 @@ void MelodyPlayer::t_melodyplayer(void *args)
 {
     for (;;)
     {
-        while(alarm) alarmCycle();
+        if (alarm)
+        {
+            // 730MS
+            for (int i = 0; i < 10; i++)
+            {
+                int delayms = 150 / (i + 1);
+                ledcWriteTone(1, 2500);
+                delay(30);
+                ledcWriteTone(1, 0);
+                delay(delayms);
+                if(!alarm)
+                    break;
+            }
+
+
+            while (alarm)
+                alarmCycle();
+        }
 
         Melody currentMelody = melodySlot;
         melodySlot.toneCount = 0;
@@ -57,7 +74,8 @@ void MelodyPlayer::t_melodyplayer(void *args)
 
             ledcWriteTone(BUZZER_CHANNEL, currentMelody.tones[i]);
             delay(currentMelody.toneDurations[i]);
-            if(alarm) break;
+            if (alarm)
+                break;
         }
 
         ledcWriteTone(BUZZER_CHANNEL, 0);
