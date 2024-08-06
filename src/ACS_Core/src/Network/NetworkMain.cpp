@@ -67,9 +67,7 @@ void NetworkMain::CheckWiFiConnection()
         ESP_LOGE(TAG, "WiFi connection lost, reconnecting...");
         MelodyPlayer::PlayMelody(connectionLostMelody);
 
-        WiFiConfig config = Config::wifiConfig;
-
-        WiFi.begin(config.SSID, config.Password);
+        WiFi.reconnect();
 
         uint32_t start = millis();
 
