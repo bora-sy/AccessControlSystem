@@ -32,7 +32,7 @@ void FrontComm::Reset()
     SendData(CommandID::RESET, nullptr, 0);
 }
 
-void FrontComm::SendFeedback(uint16_t durationMS, char* feedback)
+void FrontComm::SendFeedback(uint16_t durationMS, const char* feedback)
 {
     uint8_t feedbackLen = strlen(feedback);
 

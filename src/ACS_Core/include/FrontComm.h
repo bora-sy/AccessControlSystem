@@ -40,6 +40,6 @@ public:
     static void Initialize();
     static bool Ping(uint16_t timeoutMS);
     static void Reset();
-    static void SendFeedback(uint16_t durationMS, char* feedback);
+    static void SendFeedback(uint16_t durationMS, const char* feedback);
     static void OpenConfigMenu(uint64_t auth);
 };

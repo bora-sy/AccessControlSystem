@@ -36,11 +36,14 @@ void WebServer::HandleAction(AsyncWebServerRequest *request)
 
     ActionRequestResult actionResult;
 
+    ESP_LOGI(TAG, "Received Action HTTP Request (Action: %s)", action.c_str());
+
     if(action == "unlock") actionResult = ActionHandler::Unlock();
     else if(action == "disengage") actionResult = ActionHandler::Disengage();
     else if(action == "engage") actionResult = ActionHandler::Engage();
     else
     {
+        ESP_LOGI(TAG, "Invalid action: %s", action.c_str());
         request->send(400, "text/plain", "Invalid action");
         return;
     }

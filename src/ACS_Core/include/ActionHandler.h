@@ -47,16 +47,19 @@ class ActionHandler
     static void PreAlarm();
     static void Alarm();
 
-    static void action_Lock();
-    static void action_Unlock();
-    static void action_Engage();
-    static void action_Disengage();
+    static void action_Lock(bool useFeedback = true);
+    static void action_Unlock(bool useFeedback = true);
+    static void action_Engage(bool useFeedback = true);
+    static void action_Disengage(bool useFeedback = true);
 
     static void ExecuteAction(Action act);
 
 
     static Melody melody_Unlock;
     static Melody melody_Lock;
+    static Melody melody_Disengage;
+    static Melody melody_Engage;
+
     static void InitializeMelodies();
 
 

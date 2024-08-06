@@ -28,13 +28,15 @@ void setup()
   Serial.begin(921600);
   Serial.println("Serial Begin");
   MelodyPlayer::Initialize();
-
+  delay(300);
 
   Melody startMelody;
   startMelody.AddNote(1000, 250);
   startMelody.AddRest(100);
   startMelody.AddNote(2000, 150);
   MelodyPlayer::PlayMelody(startMelody);
+  
+  delay(500);
 
   LCD::Initialize();
 

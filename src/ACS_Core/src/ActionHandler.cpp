@@ -8,6 +8,8 @@ ulong ActionHandler::Time_DoorLocked = 0;
 
 Melody ActionHandler::melody_Unlock;
 Melody ActionHandler::melody_Lock;
+Melody ActionHandler::melody_Disengage;
+Melody ActionHandler::melody_Engage;
 
 void ActionHandler::Initialize()
 {
@@ -30,6 +32,16 @@ void ActionHandler::InitializeMelodies()
 
     melody_Lock.AddNote(1500, 1000);
     melody_Lock.AddNote(750, 200);
+
+    melody_Engage.AddNote(1500, 100);
+    melody_Engage.AddRest(50);
+    melody_Engage.AddNote(1500, 100);
+    melody_Engage.AddRest(50);
+    melody_Engage.AddNote(1500, 100);
+
+    melody_Disengage.AddNote(1500, 100);
+    melody_Disengage.AddNote(1000, 100);
+    melody_Disengage.AddNote(750, 150);
 }
 
 
@@ -41,7 +53,7 @@ void ActionHandler::ExecuteAction(Action act)
 ActionRequestResult ActionHandler::Unlock()
 {
     ESP_LOGI(TAG, "Unlock requested (Current State: %d)", CurrentState);
-    if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN) return ALREADY_UNLOCKED;
+    if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN || CurrentState == DISENGAGED) return ALREADY_UNLOCKED;
     ExecuteAction(UNLOCK);
     return SUCCESS;
 }
@@ -137,37 +149,74 @@ void ActionHandler::Alarm()
     }
 }
 
-void ActionHandler::action_Lock()
+void ActionHandler::action_Lock(bool useFeedback)
 {
+    if(CurrentState == LOCKED || !Lock::IsDoorClosed()) return;
+
     CurrentState = LOCKED;
-    MelodyPlayer::PlayMelody(melody_Lock);
+
+    if(useFeedback)
+    {
+        MelodyPlayer::PlayMelody(melody_Lock);
+    }
+
+
     Lock::SetSolenoid(false);
     
     Serial.println("Door Locked");
 }
 
-void ActionHandler::action_Unlock()
+void ActionHandler::action_Unlock(bool useFeedback)
 {
+    if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN || CurrentState == DISENGAGED) return;
+
     CurrentState = UNLOCKED_WAITINGDOOROPEN;
-    MelodyPlayer::PlayMelody(melody_Unlock);
+
+    if(useFeedback)
+    {
+        MelodyPlayer::PlayMelody(melody_Unlock);
+    }
 
     delay(150);
-    digitalWrite(PIN_SOLENOID, HIGH);
+    Lock::SetSolenoid(true);
     delay(100);
-    digitalWrite(PIN_SOLENOID, LOW);
+    Lock::SetSolenoid(false);
     delay(200);
-    digitalWrite(PIN_SOLENOID, HIGH);
+    Lock::SetSolenoid(true);
 
 
     Serial.println("Door Unlocked (Waiting for door to open)");
 }
 
-void ActionHandler::action_Engage()
+void ActionHandler::action_Engage(bool useFeedback)
 {
+    if(CurrentState != DISENGAGED) return;
 
+    if(Lock::IsDoorClosed())
+    {
+        action_Lock(false);
+    }
+    else
+    {
+        CurrentState = UNLOCKED;
+    }
+
+    if(useFeedback)
+    {
+        MelodyPlayer::PlayMelody(melody_Engage);
+    }
 }
 
-void ActionHandler::action_Disengage()
+void ActionHandler::action_Disengage(bool useFeedback)
 {
+    if(CurrentState == DISENGAGED) return;
 
+    CurrentState = DISENGAGED;
+    
+    Lock::SetSolenoid(true);
+
+    if(useFeedback)
+    {
+        MelodyPlayer::PlayMelody(melody_Disengage);
+    }
 }
