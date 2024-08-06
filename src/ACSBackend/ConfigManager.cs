@@ -9,8 +9,10 @@ namespace ACSBackend
     public enum ConfigEnum
     {
         DISCORD_TOKEN,
-        DEVICE_APIKEY,
-        COREDEVICE_IP
+        COREDEVICE_COMMKEY,
+        FRONTDEVICE_COMMKEY,
+        COREDEVICE_IP,
+        FRONTDEVICE_IP,
     }
 
     public static class ConfigManager

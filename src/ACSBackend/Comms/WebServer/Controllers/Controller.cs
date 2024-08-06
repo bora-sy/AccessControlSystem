@@ -40,10 +40,10 @@ namespace ACSBackend.Comms.WebServer.Controllers
                 "unlock" => DeviceAction.Unlock,
                 "engage" => DeviceAction.Engage,
                 "disengage" => DeviceAction.Disengage,
-                _ => (DeviceAction)100
+                _ => (DeviceAction)(-1)
             };
 
-            if (deviceAction == (DeviceAction)100) return BadRequest("Invalid Action");
+            if (deviceAction == (DeviceAction)(-1)) return BadRequest("Invalid Action");
 
             var user = _db.Users.Where(x => x.ACSPin == pin).FirstOrDefault();
 
@@ -54,7 +54,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
             if ((deviceAction == DeviceAction.Unlock) && !user.HasPermission(Permission.ACTION_LOCKUNLOCK)) return Unauthorized("No Permission (1)");
             if ((deviceAction == DeviceAction.Engage || deviceAction == DeviceAction.Disengage) && !user.HasPermission(Permission.ACTION_DISENGAGE)) return Unauthorized("No Permission (2)");
 
-            var res = await DeviceCommMain.ExecuteAction(deviceAction);
+            var res = await Core.ExecuteAction(deviceAction);
 
             return res switch
             {

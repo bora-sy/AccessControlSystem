@@ -6,7 +6,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [RequireDeviceKey]
+    [RequireCoreCommKey]
     public class CoreDeviceController(ILogger<CoreDeviceController> logger, IConfiguration configuration)
             : ControllerBase
     {
@@ -25,16 +25,12 @@ namespace ACSBackend.Comms.WebServer.Controllers
             return Ok("success");
         }
 
-        [HttpPost("input/keypad")]
-        public IActionResult KeypadInput()
+        [HttpPost("logalarm")]
+        public IActionResult LogAlarm(bool preAlarm)
         {
-            return Ok("test");
+            Console.WriteLine($"ALARM RECEIVED (PREALARM: {preAlarm})");
+            return Ok("TEMP");
         }
-        
-        [HttpPost("input/card")]
-        public IActionResult CardInput()
-        {
-            return Ok("test");
-        }
+
     }
 }

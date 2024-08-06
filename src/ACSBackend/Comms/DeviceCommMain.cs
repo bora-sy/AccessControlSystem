@@ -11,64 +11,72 @@ namespace ACSBackend.Comms
         const int DEVICE_PORT = 80;
 
         private static AppDBContext DB = null!;
-        public static string DeviceAPIKey { get; private set; } = null!;
+
+        public static string CoreCommKey { get; private set; } = null!;
+        public static string FrontCommKey { get; private set; } = null!;
 
         public static async Task InitDeviceComm(IServiceProvider services)
         {
             DB = services.GetService<AppDBContext>()!;
 
-            DeviceAPIKey = ConfigManager.GetConfig(ConfigEnum.DEVICE_APIKEY)!;
+            CoreCommKey = ConfigManager.GetConfig(ConfigEnum.COREDEVICE_COMMKEY)!;
+            FrontCommKey = ConfigManager.GetConfig(ConfigEnum.FRONTDEVICE_COMMKEY)!;
         }
 
-        private static string BuildURL(string path) => $"http://{ConfigManager.GetConfig(ConfigEnum.COREDEVICE_IP)}:{DEVICE_PORT}{path}";
-
-        private static async Task<ActionRequestResult> POST(string path)
+        public static class Core
         {
-            string url = BuildURL(path);
+            private static string BuildURL(string path) => $"http://{ConfigManager.GetConfig(ConfigEnum.COREDEVICE_IP)}:{DEVICE_PORT}{path}";
 
-            HttpClient client = new HttpClient();
-            HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, url);
-            try
+            private static async Task<ActionRequestResult> POST(string path)
             {
-                msg.Headers.Authorization = new AuthenticationHeaderValue("", DeviceAPIKey);
+                string url = BuildURL(path);
 
-                HttpResponseMessage response = await client.SendAsync(msg);
-
-                if(response.StatusCode != HttpStatusCode.OK) return ActionRequestResult.ERROR;
-                string res = await response.Content.ReadAsStringAsync();
-                response.Dispose();
-                return Enum.Parse<ActionRequestResult>(res);
-            }
-            catch (Exception)
-            {
-                return ActionRequestResult.ERROR;
-            }
-            finally
-            {
-                if (client != null) client.Dispose();
-                if (msg != null) msg.Dispose();
-            }
-        }
-
-        public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action)
-        {
-            try
-            {
-                string path = action switch
+                HttpClient client = new HttpClient();
+                HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, url);
+                try
                 {
-                    DeviceAction.Unlock => "/action/",
-                    DeviceAction.Engage => "/engage",
-                    DeviceAction.Disengage => "/disengage",
-                    _ => throw new NotImplementedException()
-                };
+                    msg.Headers.Add("CommKey", CoreCommKey);
 
-                return await POST(path);
+                    HttpResponseMessage response = await client.SendAsync(msg);
+
+                    if (response.StatusCode != HttpStatusCode.OK) return ActionRequestResult.ERROR;
+                    string res = await response.Content.ReadAsStringAsync();
+                    response.Dispose();
+                    return Enum.Parse<ActionRequestResult>(res);
+                }
+                catch (Exception)
+                {
+                    return ActionRequestResult.ERROR;
+                }
+                finally
+                {
+                    if (client != null) client.Dispose();
+                    if (msg != null) msg.Dispose();
+                }
             }
-            catch (Exception)
+
+            public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action)
             {
-                return ActionRequestResult.ERROR;
+                try
+                {
+                    string path = action switch
+                    {
+                        DeviceAction.Unlock => "/action?action=unlock",
+                        DeviceAction.Engage => "/action?action=engage",
+                        DeviceAction.Disengage => "/action?action=disengage",
+                        _ => throw new NotImplementedException()
+                    };
+
+                    return await POST(path);
+                }
+                catch (Exception)
+                {
+                    return ActionRequestResult.ERROR;
+                }
             }
         }
+
+        
 
 
 

@@ -6,7 +6,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    [RequireDeviceKey]
+    [RequireFrontCommKey]
     public class FrontDeviceController(ILogger<FrontDeviceController> logger, IConfiguration configuration)
             : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
 
             string ipstr = IP.ToString();
 
-            ConfigManager.SetConfig(ConfigEnum.COREDEVICE_IP, ipstr);
+            ConfigManager.SetConfig(ConfigEnum.FRONTDEVICE_IP, ipstr);
 
             return Ok("success");
         }
