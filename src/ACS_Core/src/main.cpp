@@ -35,7 +35,7 @@ void setup()
   startMelody.AddRest(100);
   startMelody.AddNote(2000, 150);
   MelodyPlayer::PlayMelody(startMelody);
-  
+
   delay(500);
 
   LCD::Initialize();
@@ -58,5 +58,6 @@ void setup()
 void loop()
 {
   OTA::Loop();
+  NetworkMain::CheckWiFiConnection();
   delay(100);
 }

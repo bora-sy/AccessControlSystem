@@ -9,7 +9,13 @@
 class NetworkMain
 {
     private:
+
+    static Melody initMelody;
+    static Melody connectedMelody;
+    static Melody failedMelody;
+    static Melody connectionLostMelody;
     
     public:
     static bool Initialize();
+    static void CheckWiFiConnection();
 };
