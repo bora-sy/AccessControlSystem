@@ -5,6 +5,12 @@ using static ACSBackend.Comms.DeviceCommMain;
 
 namespace ACSBackend.Comms.WebServer.Controllers
 {
+    /// <summary>
+    /// Controller for the users
+    /// </summary>
+    /// <param name="logger"></param>
+    /// <param name="configuration"></param>
+    /// <param name="db"></param>
     [ApiController]
     [Route("[controller]")]
     public class Controller(ILogger<Controller> logger, IConfiguration configuration, AppDBContext db)
@@ -31,7 +37,6 @@ namespace ACSBackend.Comms.WebServer.Controllers
 
             DeviceAction deviceAction = action switch
             {
-                "lock" => DeviceAction.Lock,
                 "unlock" => DeviceAction.Unlock,
                 "engage" => DeviceAction.Engage,
                 "disengage" => DeviceAction.Disengage,
@@ -46,20 +51,18 @@ namespace ACSBackend.Comms.WebServer.Controllers
 
             if (!user.HasPermission(Permission.USE_ACTIONS)) return Unauthorized("No Permission (0)");
 
-            if ((deviceAction == DeviceAction.Lock || deviceAction == DeviceAction.Unlock) && !user.HasPermission(Permission.ACTION_LOCKUNLOCK)) return Unauthorized("No Permission (1)");
+            if ((deviceAction == DeviceAction.Unlock) && !user.HasPermission(Permission.ACTION_LOCKUNLOCK)) return Unauthorized("No Permission (1)");
             if ((deviceAction == DeviceAction.Engage || deviceAction == DeviceAction.Disengage) && !user.HasPermission(Permission.ACTION_DISENGAGE)) return Unauthorized("No Permission (2)");
 
             var res = await DeviceCommMain.ExecuteAction(deviceAction);
 
             return res switch
             {
-                DeviceActionResponse.Success => Ok("success"),
-                DeviceActionResponse.Busy => BadRequest("busy"),
-                DeviceActionResponse.NotLocked => BadRequest("Not Locked"),
-                DeviceActionResponse.NotUnlocked => BadRequest("Not Unlocked"),
-                DeviceActionResponse.NotEngaged => BadRequest("Not Engaged"),
-                DeviceActionResponse.NotDisengaged => BadRequest("Not Disengaged"),
-                DeviceActionResponse.Error => BadRequest("Error"),
+                ActionRequestResult.SUCCESS => Ok("success"),
+                ActionRequestResult.ERROR => StatusCode(500, "Error"),
+                ActionRequestResult.ALREADY_UNLOCKED => BadRequest("Already Unlocked"),
+                ActionRequestResult.ALREADY_ENGAGED => BadRequest("Already Engaged"),
+                ActionRequestResult.ALREADY_DISENGAGED => BadRequest("Already Disengaged"),
                 _ => StatusCode(500, "Unknown Error")
             };
 

@@ -10,8 +10,7 @@ namespace ACSBackend
     {
         DISCORD_TOKEN,
         DEVICE_APIKEY,
-        DEVICE_IP,
-        DEVICE_MANAGE_PASSWORD
+        COREDEVICE_IP
     }
 
     public static class ConfigManager

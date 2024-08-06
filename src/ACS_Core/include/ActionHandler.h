@@ -8,8 +8,7 @@
 
 enum Action
 {
-    NONE = 0,
-    LOCK,
+    NONE = -1,
     UNLOCK,
     ENGAGE,
     DISENGAGE

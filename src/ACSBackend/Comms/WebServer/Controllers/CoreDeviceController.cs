@@ -7,27 +7,11 @@ namespace ACSBackend.Comms.WebServer.Controllers
     [ApiController]
     [Route("[controller]")]
     [RequireDeviceKey]
-    public class DeviceController(ILogger<DeviceController> logger, IConfiguration configuration)
+    public class CoreDeviceController(ILogger<CoreDeviceController> logger, IConfiguration configuration)
             : ControllerBase
     {
         private readonly IConfiguration _configuration = configuration;
-        private readonly ILogger<DeviceController> _logger = logger;
-
-        /// <summary>
-        /// Simple ping
-        /// </summary>
-        /// <returns></returns>
-        [HttpGet]
-        public IActionResult GetDefault()
-        {
-            return Ok("pong");
-        }
-
-        [HttpGet("getdevicemanagepassword")]
-        public IActionResult GetDeviceManagePassword()
-        {
-            return Ok(ConfigManager.GetConfig(ConfigEnum.DEVICE_MANAGE_PASSWORD));
-        }
+        private readonly ILogger<CoreDeviceController> _logger = logger;
 
         [HttpPost("setdeviceip")]
         public IActionResult SetDeviceIP(string ipaddr)
@@ -36,7 +20,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
 
             string ipstr = IP.ToString();
 
-            ConfigManager.SetConfig(ConfigEnum.DEVICE_IP, ipstr);
+            ConfigManager.SetConfig(ConfigEnum.COREDEVICE_IP, ipstr);
 
             return Ok("success");
         }

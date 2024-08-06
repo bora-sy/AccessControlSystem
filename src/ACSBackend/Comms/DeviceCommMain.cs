@@ -20,9 +20,9 @@ namespace ACSBackend.Comms
             DeviceAPIKey = ConfigManager.GetConfig(ConfigEnum.DEVICE_APIKEY)!;
         }
 
-        private static string BuildURL(string path) => $"http://{ConfigManager.GetConfig(ConfigEnum.DEVICE_IP)}:{DEVICE_PORT}{path}";
+        private static string BuildURL(string path) => $"http://{ConfigManager.GetConfig(ConfigEnum.COREDEVICE_IP)}:{DEVICE_PORT}{path}";
 
-        private static async Task<DeviceActionResponse> POST(string path)
+        private static async Task<ActionRequestResult> POST(string path)
         {
             string url = BuildURL(path);
 
@@ -34,14 +34,14 @@ namespace ACSBackend.Comms
 
                 HttpResponseMessage response = await client.SendAsync(msg);
 
-                if(response.StatusCode != HttpStatusCode.OK) return DeviceActionResponse.Error;
+                if(response.StatusCode != HttpStatusCode.OK) return ActionRequestResult.ERROR;
                 string res = await response.Content.ReadAsStringAsync();
                 response.Dispose();
-                return Enum.Parse<DeviceActionResponse>(res);
+                return Enum.Parse<ActionRequestResult>(res);
             }
             catch (Exception)
             {
-                return DeviceActionResponse.Error;
+                return ActionRequestResult.ERROR;
             }
             finally
             {
@@ -50,14 +50,13 @@ namespace ACSBackend.Comms
             }
         }
 
-        public static async Task<DeviceActionResponse> ExecuteAction(DeviceAction action)
+        public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action)
         {
             try
             {
                 string path = action switch
                 {
-                    DeviceAction.Lock => "/lock",
-                    DeviceAction.Unlock => "/unlock",
+                    DeviceAction.Unlock => "/action/",
                     DeviceAction.Engage => "/engage",
                     DeviceAction.Disengage => "/disengage",
                     _ => throw new NotImplementedException()
@@ -67,7 +66,7 @@ namespace ACSBackend.Comms
             }
             catch (Exception)
             {
-                return DeviceActionResponse.Error;
+                return ActionRequestResult.ERROR;
             }
         }
 
@@ -75,21 +74,18 @@ namespace ACSBackend.Comms
 
         public enum DeviceAction
         {
-            Lock,
             Unlock,
             Engage,
-            Disengage,
+            Disengage
         }
 
-        public enum DeviceActionResponse
+        public enum ActionRequestResult
         {
-            Error,
-            Success,
-            Busy,
-            NotLocked,
-            NotUnlocked,
-            NotEngaged,
-            NotDisengaged,
+            ERROR = -1,
+            SUCCESS = 0,
+            ALREADY_UNLOCKED,
+            ALREADY_ENGAGED,
+            ALREADY_DISENGAGED
         }
     }
 }
