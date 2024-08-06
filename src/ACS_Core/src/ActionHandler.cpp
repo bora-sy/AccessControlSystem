@@ -1,4 +1,5 @@
 #include "ActionHandler.h"
+#define TAG "ActionHandler"
 
 Action ActionHandler::TargetAction = NONE;
 DoorState ActionHandler::CurrentState = LOCKED;
@@ -37,16 +38,10 @@ void ActionHandler::ExecuteAction(Action act)
     TargetAction = act;
 }
 
-ActionRequestResult ActionHandler::Lock()
-{
-    if(CurrentState == LOCKED) return ALREADY_LOCKED;
-    ExecuteAction(LOCK);
-    return SUCCESS;
-}
-
 ActionRequestResult ActionHandler::Unlock()
 {
-    if(CurrentState == UNLOCKED) return ALREADY_UNLOCKED;
+    ESP_LOGI(TAG, "Unlock requested (Current State: %d)", CurrentState);
+    if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN) return ALREADY_UNLOCKED;
     ExecuteAction(UNLOCK);
     return SUCCESS;
 }
@@ -94,7 +89,6 @@ void ActionHandler::t_DoorHandler(void *args)
 
         switch (TargetAction)
         {
-            case LOCK: action_Lock(); break;
             case UNLOCK: action_Unlock(); break;
             case ENGAGE: action_Engage(); break;
             case DISENGAGE: action_Disengage(); break;
@@ -108,14 +102,39 @@ void ActionHandler::t_DoorHandler(void *args)
 void ActionHandler::AlarmCheck()
 {
     if(CurrentState != LOCKED || Lock::IsDoorClosed() || millis() - Time_DoorLocked < DOOR_LOCK_TIMEOUT) return;
-    Serial.println("ALARM");
+
     MelodyPlayer::SetAlarm(true);
-    
+
+    PreAlarm();
+
+    if(CurrentState == LOCKED && !Lock::IsDoorClosed())
+    {
+        Alarm();
+    }
+}
+
+void ActionHandler::PreAlarm()
+{
+    ESP_LOGW(TAG, "PRE-ALARM");
+    ulong canBeCancelledUntil = millis() + 730;
+    while(millis() <= canBeCancelledUntil)
+    {
+        if(Lock::IsDoorClosed())
+        {
+            MelodyPlayer::SetAlarm(false);
+            return;
+        }
+        delay(10);
+    }
+}
+
+void ActionHandler::Alarm()
+{
+    ESP_LOGW(TAG, "ALARM");
     for(;;)
     {
         delay(10);
     }
-
 }
 
 void ActionHandler::action_Lock()

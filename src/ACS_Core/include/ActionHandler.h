@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include "IO/Lock.h"
 #include "IO/MelodyPlayer.h"
+#include "esp_log.h"
 
 #define DOOR_LOCK_TIMEOUT 5000
 
@@ -17,7 +18,6 @@ enum Action
 enum ActionRequestResult
 {
     SUCCESS = 0,
-    ALREADY_LOCKED,
     ALREADY_UNLOCKED,
     ALREADY_ENGAGED,
     ALREADY_DISENGAGED,
@@ -44,6 +44,8 @@ class ActionHandler
     static void t_DoorHandler(void *args);
 
     static void AlarmCheck();
+    static void PreAlarm();
+    static void Alarm();
 
     static void action_Lock();
     static void action_Unlock();
@@ -60,8 +62,6 @@ class ActionHandler
 
     public:
     static void Initialize();
-
-    static ActionRequestResult Lock();
     static ActionRequestResult Unlock();
     static ActionRequestResult Engage();
     static ActionRequestResult Disengage();

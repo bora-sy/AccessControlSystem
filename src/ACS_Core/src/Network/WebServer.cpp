@@ -17,6 +17,7 @@ bool WebServer::Initialize()
 
     server.begin();
 
+    ESP_LOGI(TAG, "WebServer initialized (%s)", CommKey.c_str());
     return true;
 }
 
@@ -35,8 +36,8 @@ void WebServer::HandleAction(AsyncWebServerRequest *request)
 
     ActionRequestResult actionResult;
 
-    if(action == "lock") actionResult = ActionHandler::Lock();
-    else if(action == "unlock") actionResult = ActionHandler::Unlock();
+    if(action == "unlock") actionResult = ActionHandler::Unlock();
+    else if(action == "disengage") actionResult = ActionHandler::Disengage();
     else if(action == "engage") actionResult = ActionHandler::Engage();
     else
     {
