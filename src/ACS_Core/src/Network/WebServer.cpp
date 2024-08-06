@@ -7,12 +7,8 @@ String WebServer::CommKey = "";
 bool WebServer::Initialize()
 {
     ESP_LOGI(TAG, "Initializing WebServer");
-    WebServerConfig config = GetConfig();
-    if(strlen(config.CommKey) == 0)
-    {
-        ESP_LOGE(TAG, "No WebServer config found");
-        return false;
-    }
+
+    WebServerConfig config = Config::webServerConfig;
 
     CommKey = config.CommKey;
 
@@ -72,37 +68,6 @@ bool WebServer::ValidateRequest(AsyncWebServerRequest *request)
     }
 
     return true;
-}
-
-
-
-// CONFIG
-
-WebServerConfig WebServer::GetConfig()
-{
-    if(!DataSaving::FileExists("/webserverconfig.bin"))
-    {
-        ESP_LOGW(TAG, "WebServer config file not found");
-        return WebServerConfig();
-    }
-
-    WebServerConfig config;
-
-    uint16_t readLen = DataSaving::ReadData("/webserverconfig.bin", (uint8_t*)&config, sizeof(WebServerConfig));
-
-    if(readLen != sizeof(WebServerConfig))
-    {
-        ESP_LOGE(TAG, "Failed to read WebServer config file");
-        return WebServerConfig();
-    }
-
-    return config;
-}
-
-bool WebServer::SetConfig(WebServerConfig config)
-{
-    ESP_LOGI(TAG, "Setting WebServer config (CommKey: %s)", config.CommKey);
-    return DataSaving::WriteData("/webserverconfig.bin", (uint8_t*)&config, sizeof(WebServerConfig), true) == sizeof(WebServerConfig);
 }
 
 WebServerConfig::WebServerConfig(const char *_commKey)

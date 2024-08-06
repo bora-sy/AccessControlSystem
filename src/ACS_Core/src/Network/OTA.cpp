@@ -34,14 +34,9 @@ void onOTAEnd(bool success) {
 bool OTA::Initialize()
 {
     ESP_LOGI(TAG, "Initializing OTA");
-    OTAConfig config = GetConfig();
 
-    if(strlen(config.Username) == 0)
-    {
-        ESP_LOGE(TAG, "No OTA config found");
-        return false;
-    }
-
+    OTAConfig config = Config::otaConfig;
+    
     OTAServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
     {
         request->send(200, "text/plain", "OTA Server");
@@ -63,34 +58,6 @@ bool OTA::Initialize()
 void OTA::Loop()
 {
     ElegantOTA.loop();
-}
-
-
-OTAConfig OTA::GetConfig()
-{
-    if(!DataSaving::FileExists("/otaconfig.bin"))
-    {
-        ESP_LOGW(TAG, "OTA config file not found");
-        return OTAConfig();
-    }
-
-    OTAConfig config;
-
-    uint16_t readLen = DataSaving::ReadData("/otaconfig.bin", (uint8_t*)&config, sizeof(OTAConfig));
-
-    if(readLen != sizeof(OTAConfig))
-    {
-        ESP_LOGE(TAG, "Failed to read OTA config file");
-        return OTAConfig();
-    }
-
-    return config;
-}
-
-bool OTA::SetConfig(OTAConfig config)
-{
-    ESP_LOGI(TAG, "Setting OTA config (Username: %s / Password: %s)", config.Username, config.Password);
-    return DataSaving::WriteData("/otaconfig.bin", (uint8_t*)&config, sizeof(OTAConfig), true) == sizeof(OTAConfig);
 }
 
 OTAConfig::OTAConfig(const char *_username, const char *_password)

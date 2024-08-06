@@ -13,6 +13,25 @@ struct WiFiConfig
 };
 
 
+struct OTAConfig
+{
+    char Username[20];
+    char Password[20];
+
+    OTAConfig(const char* _username, const char* _password);
+    OTAConfig();
+};
+
+
+struct WebServerConfig
+{
+    char CommKey[33];
+
+    WebServerConfig(const char* _commKey);
+    WebServerConfig();
+};
+
+
 
 class Config
 {
@@ -21,5 +40,8 @@ private:
     static bool SaveConfig(const char* path, void* config, size_t size);
 public:
     static WiFiConfig wifiConfig;
+    static OTAConfig otaConfig;
+    static WebServerConfig webServerConfig;
+    
     static bool Initialize();
 };

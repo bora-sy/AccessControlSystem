@@ -3,12 +3,16 @@
 
 
 WiFiConfig Config::wifiConfig;
+OTAConfig Config::otaConfig;
+WebServerConfig Config::webServerConfig;
 
 bool Config::Initialize()
 {
     
     if(
     !LoadConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig)) ||
+    !LoadConfig("/ota.cfg", &otaConfig, sizeof(OTAConfig)) ||
+    !LoadConfig("/webserver.cfg", &webServerConfig, sizeof(WebServerConfig))
     )
     {
         ESP_LOGE(KEY, "Failed to load config");
