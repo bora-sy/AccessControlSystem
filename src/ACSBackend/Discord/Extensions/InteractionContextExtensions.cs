@@ -26,6 +26,14 @@ namespace ACSBackend.Discord.Extensions
             return ctx.EditResponseAsync(new DiscordEmbedBuilder() { Color = color, Title = title, Description = description });
         }
 
+        public static Task<DiscordMessage> EditResponseAsync(this InteractionContext ctx, Exception ex)
+        {
+            return ctx.EditResponseAsync(DiscordColor.DarkRed, "An Error Occured", 
+                $"{ex.Message}\n\n" +
+                $"{ex.StackTrace}"
+                );
+        }
+
 
 
 

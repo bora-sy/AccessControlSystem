@@ -1,5 +1,5 @@
 #include "Config.h"
-#define KEY "Config"
+#define TAG "Config"
 
 WiFiConfig Config::wifiConfig;
 OTAConfig Config::otaConfig;
@@ -7,7 +7,6 @@ WebServerConfig Config::webServerConfig;
 
 bool Config::Initialize()
 {
-
     if (
         !LoadConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig)) ||
         !LoadConfig("/ota.cfg", &otaConfig, sizeof(OTAConfig)) ||
@@ -21,10 +20,11 @@ bool Config::Initialize()
 
         MelodyPlayer::PlayMelody(failMelody);
 
-        ESP_LOGE(KEY, "Failed to load config");
+        ESP_LOGE(TAG, "Failed to load config");
         return false;
     }
 
+    ESP_LOGI(TAG, "WEBSERVER %s", webServerConfig.CommKey);
     return true;
 }
 
@@ -32,7 +32,7 @@ bool Config::LoadConfig(const char *path, void *config, size_t size)
 {
     if (!DataSaving::FileExists(path))
     {
-        ESP_LOGE(KEY, "Config file %s does not exist", path);
+        ESP_LOGE(TAG, "Config file %s does not exist", path);
         return false;
     }
 
@@ -40,7 +40,7 @@ bool Config::LoadConfig(const char *path, void *config, size_t size)
         return true;
     else
     {
-        ESP_LOGE(KEY, "Failed to read config from %s", path);
+        ESP_LOGE(TAG, "Failed to read config from %s", path);
         return false;
     }
 
@@ -53,7 +53,7 @@ bool Config::SaveConfig(const char *path, void *config, size_t size)
         return true;
     else
     {
-        ESP_LOGE(KEY, "Failed to write config to %s", path);
+        ESP_LOGE(TAG, "Failed to write config to %s", path);
         return false;
     }
 

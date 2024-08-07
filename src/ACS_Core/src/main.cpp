@@ -46,9 +46,6 @@ void setup()
   InitCritical(WebServer::Initialize, "Initializing WebServer", "WebServer failed to initialize");
   InitCritical(OTA::Initialize, "Initializing OTA", "OTA failed to initialize");
 
-
-
-  FrontComm::Initialize();
   Lock::Initialize();
   ActionHandler::Initialize();
 

@@ -21,43 +21,5 @@ namespace ACSBackend.Discord.Extensions
             }
         }
 
-        public static DiscordEmbedBuilder ToDiscordEmbed(this ActionRequestResult res)
-        {
-            switch (res)
-            {
-                case ActionRequestResult.SUCCESS:
-                    return new DiscordEmbedBuilder()
-                        .WithColor(DiscordColor.Green)
-                        .WithTitle("Success");
-
-                case ActionRequestResult.ERROR:
-                    return new DiscordEmbedBuilder()
-                        .WithColor(DiscordColor.DarkRed)
-                        .WithTitle("Unknown Error Occured");
-
-                case ActionRequestResult.ALREADY_ENGAGED:
-                    return new DiscordEmbedBuilder()
-                        .WithColor(DiscordColor.Orange)
-                        .WithTitle("Error")
-                        .WithDescription("Door is already engaged");
-
-                case ActionRequestResult.ALREADY_DISENGAGED:
-                    return new DiscordEmbedBuilder()
-                        .WithColor(DiscordColor.Orange)
-                        .WithTitle("Error")
-                        .WithDescription("Door is already disengaged");
-
-                case ActionRequestResult.ALREADY_UNLOCKED:
-                    return new DiscordEmbedBuilder()
-                        .WithColor(DiscordColor.Orange)
-                        .WithTitle("Error")
-                        .WithDescription("Door is already unlocked");
-
-                default:
-                    return new DiscordEmbedBuilder()
-                        .WithColor(DiscordColor.DarkRed)
-                        .WithDescription("Unknown Result");
-            }
-        }
     }
 }
