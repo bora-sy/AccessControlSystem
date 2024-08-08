@@ -9,7 +9,12 @@
         ACTION_UNLOCK = 1 << 1,
         ACTION_DISENGAGE  = 1 << 2,
 
+        MANAGE_LOGS       = 1 << 49,
         MANAGE_PERMS      = 1 << 50,
+
+
+
+        ALL = ulong.MaxValue
     }
 
 

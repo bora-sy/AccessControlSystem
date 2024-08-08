@@ -6,11 +6,11 @@ using DSharpPlus.SlashCommands;
 
 namespace ACSBackend.Discord.Attributes
 {
-    public class RequirePermissionAttribute : SlashCheckBaseAttribute
+    public class RequirePermissionDCAttribute : SlashCheckBaseAttribute
     {
         public Permission Permission { get; private set; }
 
-        public RequirePermissionAttribute(Permission perm)
+        public RequirePermissionDCAttribute(Permission perm)
         {
             Permission = perm;
         }
