@@ -16,7 +16,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
         private readonly ILogger<LogsController> _logger = logger;
 
 
-        [HttpPost("redirectlogs")]
+        [HttpPost("redirect")]
         public IActionResult SetDeviceIP(string pin, string ip, int port)
         {
             if (!IPAddress.TryParse(ip, out IPAddress? IP) || IP == null) return BadRequest("invalid_ip");

@@ -7,6 +7,7 @@
 #include "Network/NetworkMain.h"
 #include "Network/OTA.h"
 #include "Network/WebServer.h"
+#include "RemoteLogging.h"
 
 void InitCritical(bool (*initFunc)(), const char* loadingText, const char* errorText)
 {
@@ -27,7 +28,9 @@ void setup()
 {
   Serial.begin(921600);
   Serial.println("Serial Begin");
+  RemoteLogging::Initialize();
   MelodyPlayer::Initialize();
+  
   delay(300);
 
   Melody startMelody;
@@ -48,6 +51,7 @@ void setup()
 
   Lock::Initialize();
   ActionHandler::Initialize();
+
 
   ESP_LOGI("Main", "Initialization complete");
 }

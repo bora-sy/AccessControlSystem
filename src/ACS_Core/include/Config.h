@@ -43,6 +43,7 @@ public:
     static WiFiConfig wifiConfig;
     static OTAConfig otaConfig;
     static WebServerConfig webServerConfig;
+    const static uint8_t ServerIPAddress[];
     
     static bool Initialize();
 };

@@ -6,9 +6,11 @@ namespace LogViewer
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             Credentials credentials = GetCredentials();
+
+            await RedirectLogs(credentials);
 
             NewSession(credentials);
         }
@@ -43,10 +45,19 @@ namespace LogViewer
         }
 
 
-        static void RedirectLogs(Credentials creds)
+        static async Task RedirectLogs(Credentials creds)
         {
             HttpClient client = new HttpClient();
-            client.BaseAddress = new Uri($"http://{creds.IP}:{creds.Port}");
+
+            string url = $"http://{creds.ACSIP}:5243/logs/redirect?pin={creds.PIN}&ip={creds.IP}&port={creds.Port}";
+
+            var resp = await client.PostAsync(url, null);
+
+            if (!resp.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Failed to redirect logs");
+
+            }
         }
 
 

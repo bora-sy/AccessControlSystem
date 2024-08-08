@@ -5,6 +5,8 @@ WiFiConfig Config::wifiConfig;
 OTAConfig Config::otaConfig;
 WebServerConfig Config::webServerConfig;
 
+const uint8_t Config::ServerIPAddress[] = {10,134,100,230};
+
 bool Config::Initialize()
 {
     if (
