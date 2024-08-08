@@ -1,10 +1,12 @@
 
 using ACSBackend.Comms;
+using ACSBackend.Comms.RemoteLogging;
 using ACSBackend.Database;
 using BKDijitalYoklamaBackend.Discord;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System;
+using System.Net;
 
 namespace ACSBackend
 {
@@ -12,6 +14,7 @@ namespace ACSBackend
     {
         public static async Task Main(string[] args)
         {
+
             try
             {
 
@@ -75,6 +78,7 @@ namespace ACSBackend
 
                 await DiscordMain.InitDiscord(app.Services);
                 await DeviceCommMain.InitDeviceComm(app.Services);
+                await RemoteLoggingMain.Initialize();
 
                 app.Run();
             }

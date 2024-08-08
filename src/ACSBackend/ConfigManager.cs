@@ -13,6 +13,8 @@ namespace ACSBackend
         COREDEVICE_IP,
         FRONTDEVICE_IP,
         DISCORD_TOKEN,
+        REMOTE_LOGGING_PORT,
+        REMOTE_LOGGING_IP,
     }
 
     public static class ConfigManager
