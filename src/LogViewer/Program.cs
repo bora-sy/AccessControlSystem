@@ -115,7 +115,7 @@ namespace LogViewer
 
         enum Severity : byte
         {
-            ERROR = 0,
+            ERROR = 1,
             WARNING,
             INFO,
             DEBUG,

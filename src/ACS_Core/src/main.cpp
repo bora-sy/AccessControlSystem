@@ -28,9 +28,8 @@ void setup()
 {
   Serial.begin(921600);
   Serial.println("Serial Begin");
-  RemoteLogging::Initialize();
   MelodyPlayer::Initialize();
-  
+
   delay(300);
 
   Melody startMelody;
@@ -46,6 +45,8 @@ void setup()
   InitCritical(DataSaving::Initialize, "Initializing DataSaving", "DataSaving failed to initialize");
   InitCritical(Config::Initialize, "Initializing Config", "Config failed to initialize");
   InitCritical(NetworkMain::Initialize, "Initializing NetworkMain", "NetworkMain failed to initialize");
+  InitCritical(RemoteLogging::Initialize, "Initializing RemoteLogging", "RemoteLogging failed to init");
+
   InitCritical(WebServer::Initialize, "Initializing WebServer", "WebServer failed to initialize");
   InitCritical(OTA::Initialize, "Initializing OTA", "OTA failed to initialize");
 
@@ -54,11 +55,12 @@ void setup()
 
 
   ESP_LOGI("Main", "Initialization complete");
+  RemoteLogging::Log("Initialization complete");
 }
 
 void loop()
 {
   OTA::Loop();
   NetworkMain::CheckWiFiConnection();
-  delay(100);
+  delay(500);
 }
