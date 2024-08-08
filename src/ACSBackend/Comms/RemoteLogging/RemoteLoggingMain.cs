@@ -60,15 +60,7 @@ namespace ACSBackend.Comms.RemoteLogging
         {
             if(RedirectClient != null)
             {
-                byte[] stringBytes = Encoding.UTF8.GetBytes(obj.Message);
-
-                byte[] data = new byte[9 + stringBytes.Length];
-
-                data[0] = (byte)obj.Severity;
-                BitConverter.GetBytes(obj.Timestamp).CopyTo(data, 1);
-                stringBytes.CopyTo(data, 9);
-
-                RedirectClient.Send(data, data.Length);
+                RedirectClient.Send(obj.Original, obj.Original.Length);
             }
         }
     }

@@ -16,18 +16,22 @@ bool RemoteLogging::Initialize()
     return udpsuc;
 }
 
-void RemoteLogging::Log( const char* format, esp_log_level_t level, ...) {
+void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineNum,  esp_log_level_t level, ...) {
+    
     char* text = RemoteLogging::FormatString(format);
     if (text == nullptr) return;
 
-    uint16_t bufLength = strlen(text) + 9;
+    uint16_t bufLength = 1 + 8 + 4 + strlen(text) + 1 + strlen(filename) + 1;
 
     uint8_t buf[bufLength];
+    memset(buf, 0, bufLength);
 
     buf[0] = level;
     uint64_t time = millis();
     memcpy(buf + 1, &time, 8);
-    memcpy(buf + 9, text, strlen(text));
+    memcpy(buf + 9, &lineNum, 4);
+    memcpy(buf + 13, text, strlen(text));
+    memcpy(buf + 13 + strlen(text) + 1, filename, strlen(filename));
 
 
     udp->write(buf, bufLength);

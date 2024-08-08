@@ -25,7 +25,7 @@ void InitCritical(bool (*initFunc)(), const char* loadingText, const char* error
 }
 
 void setup()
-{
+{ 
   Serial.begin(921600);
   Serial.println("Serial Begin");
   MelodyPlayer::Initialize();
@@ -55,11 +55,17 @@ void setup()
 
 
   ESP_LOGI("Main", "Initialization complete");
-  RemoteLogging::Log("Initialization complete");
+
+  REMOTELOG_I("Initialization complete");
 }
 
 void loop()
 {
+  ulong start = millis();
+  REMOTELOG_I("Loop");
+  ulong took = millis() - start;
+  REMOTELOG_I("Log took %d ms", took);
+
   OTA::Loop();
   NetworkMain::CheckWiFiConnection();
   delay(500);
