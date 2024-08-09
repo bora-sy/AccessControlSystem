@@ -1,15 +1,18 @@
 #pragma once
 #include <ElegantOTA.h>
 #include "DataSaving.h"
-#include <esp_log.h>
 #include "Config.h"
+#include "RemoteLogging.h"
 
 class OTA
 {
     private:
     static AsyncWebServer OTAServer;
+    static void onOTAEnd(bool success);
+    static void onOTAProgress(size_t current, size_t final);
+    static void onOTAStart();
 
     public:
-    static bool Initialize();
+    static void Initialize();
     static void Loop();
 };

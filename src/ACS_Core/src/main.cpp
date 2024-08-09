@@ -24,10 +24,21 @@ void InitCritical(bool (*initFunc)(), const char* loadingText, const char* error
   }
 }
 
+void InitOther(void (*initFunc)(), const char* title)
+{
+  char* title_alloc = (char*)malloc(strlen(title) + 1);
+  memcpy(title_alloc, title, strlen(title) + 1);
+
+  REMOTELOG_D("Initializing %s", title_alloc);
+
+  free(title_alloc);
+
+  initFunc();
+}
+
 void setup()
 { 
   Serial.begin(921600);
-  Serial.println("Serial Begin");
   MelodyPlayer::Initialize();
 
   delay(300);
@@ -46,27 +57,18 @@ void setup()
   InitCritical(Config::Initialize, "Initializing Config", "Config failed to initialize");
   InitCritical(NetworkMain::Initialize, "Initializing NetworkMain", "NetworkMain failed to initialize");
   InitCritical(RemoteLogging::Initialize, "Initializing RemoteLogging", "RemoteLogging failed to init");
-
-  InitCritical(WebServer::Initialize, "Initializing WebServer", "WebServer failed to initialize");
-  InitCritical(OTA::Initialize, "Initializing OTA", "OTA failed to initialize");
-
-  Lock::Initialize();
-  ActionHandler::Initialize();
-
-
-  ESP_LOGI("Main", "Initialization complete");
+  
+  InitOther(WebServer::Initialize, "WebServer");
+  InitOther(OTA::Initialize, "OTA");
+  InitOther(Lock::Initialize, "Lock");
+  InitOther(ActionHandler::Initialize, "ActionHandler");
 
   REMOTELOG_I("Initialization complete");
 }
 
 void loop()
 {
-  ulong start = millis();
-  REMOTELOG_I("Loop");
-  ulong took = millis() - start;
-  REMOTELOG_I("Log took %d ms", took);
-
   OTA::Loop();
   NetworkMain::CheckWiFiConnection();
-  delay(500);
+  delay(50);
 }

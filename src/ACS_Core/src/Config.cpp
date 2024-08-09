@@ -5,10 +5,13 @@ WiFiConfig Config::wifiConfig;
 OTAConfig Config::otaConfig;
 WebServerConfig Config::webServerConfig;
 
-const uint8_t Config::ServerIPAddress[] = {10,134,100,230};
+const uint8_t Config::ServerIPAddress[] = {192,168,29,190};
 
 bool Config::Initialize()
 {
+    wifiConfig = WiFiConfig("TEST", "TEST");
+    SaveConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig));
+
     if (
         !LoadConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig)) ||
         !LoadConfig("/ota.cfg", &otaConfig, sizeof(OTAConfig)) ||

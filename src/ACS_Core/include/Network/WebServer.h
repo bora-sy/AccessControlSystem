@@ -4,6 +4,7 @@
 #include "ActionHandler.h"
 #include "DataSaving.h"
 #include "Config.h"
+#include "RemoteLogging.h"
 
 
 class WebServer
@@ -20,5 +21,5 @@ private:
     static String CommKey;
 
 public:
-    static bool Initialize();
+    static void Initialize();
 };
