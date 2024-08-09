@@ -3,7 +3,7 @@
 
 WiFiConfig Config::wifiConfig;
 OTAConfig Config::otaConfig;
-WebServerConfig Config::webServerConfig;
+WebConfig Config::webConfig;
 
 const uint8_t Config::ServerIPAddress[] = {192,168,29,190};
 
@@ -12,7 +12,7 @@ bool Config::Initialize()
     if (
         !LoadConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig)) ||
         !LoadConfig("/ota.cfg", &otaConfig, sizeof(OTAConfig)) ||
-        !LoadConfig("/webserver.cfg", &webServerConfig, sizeof(WebServerConfig)))
+        !LoadConfig("/web.cfg", &webConfig, sizeof(WebConfig)))
     {
 
         Melody failMelody;
@@ -26,7 +26,6 @@ bool Config::Initialize()
         return false;
     }
 
-    ESP_LOGI(TAG, "WEBSERVER %s", webServerConfig.CommKey);
     return true;
 }
 
@@ -60,4 +59,25 @@ bool Config::SaveConfig(const char *path, void *config, size_t size)
     }
 
     return true;
+}
+
+
+
+//-----------------------------------------------------------
+
+// WEBCOONFIG
+
+
+WebConfig::WebConfig(const char *_commKey, uint8_t serverIP[4])
+{
+    memset(CommKey, 0, 33);
+    
+
+    strcpy(CommKey, _commKey);
+    memcpy(ServerIP, serverIP, 4);
+}
+
+WebConfig::WebConfig()
+{
+    memset(CommKey, 0, 33);
 }

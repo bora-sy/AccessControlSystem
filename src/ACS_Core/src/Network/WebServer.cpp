@@ -6,7 +6,7 @@ String WebServer::CommKey = "";
 
 void WebServer::Initialize()
 {
-    WebServerConfig config = Config::webServerConfig;
+    WebConfig config = Config::webConfig;
 
     CommKey = config.CommKey;
 
@@ -15,7 +15,7 @@ void WebServer::Initialize()
 
     server.begin();
 
-    REMOTELOG_I("WebServer Initialized (%s)", CommKey.c_str());
+    REMOTELOG_I("WebServer Initialized (CommKey: %s)", CommKey.c_str());
 }
 
 // HANDLERS
@@ -70,16 +70,4 @@ bool WebServer::ValidateRequest(AsyncWebServerRequest *request)
     }
 
     return true;
-}
-
-WebServerConfig::WebServerConfig(const char *_commKey)
-{
-    memset(CommKey, 0, 33);
-
-    strcpy(CommKey, _commKey);
-}
-
-WebServerConfig::WebServerConfig()
-{
-    memset(CommKey, 0, 33);
 }

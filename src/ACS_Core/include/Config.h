@@ -24,12 +24,14 @@ struct OTAConfig
 };
 
 
-struct WebServerConfig
+struct WebConfig
 {
     char CommKey[33];
+    uint8_t ServerIP[4];
 
-    WebServerConfig(const char* _commKey);
-    WebServerConfig();
+
+    WebConfig(const char* _commKey, uint8_t serverIP[4]);
+    WebConfig();
 };
 
 
@@ -42,7 +44,7 @@ private:
 public:
     static WiFiConfig wifiConfig;
     static OTAConfig otaConfig;
-    static WebServerConfig webServerConfig;
+    static WebConfig webConfig;
     const static uint8_t ServerIPAddress[];
     
     static bool Initialize();
