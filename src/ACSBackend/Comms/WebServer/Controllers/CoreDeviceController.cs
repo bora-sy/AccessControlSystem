@@ -13,14 +13,22 @@ namespace ACSBackend.Comms.WebServer.Controllers
         private readonly IConfiguration _configuration = configuration;
         private readonly ILogger<CoreDeviceController> _logger = logger;
 
-        [HttpPost("setdeviceip")]
-        public IActionResult SetDeviceIP(string ipaddr)
+        private const string COREDEVICE_USERAGENT = "ACS_CORE";
+
+        [HttpGet("ping")]
+        public IActionResult Ping()
         {
-            if(!IPAddress.TryParse(ipaddr, out IPAddress? IP) || IP == null) return BadRequest("invalid_ip");
+            if(Request.Headers.UserAgent == COREDEVICE_USERAGENT)
+            {
+                string? ipaddr = Request.HttpContext.Connection.RemoteIpAddress!.MapToIPv4().ToString();
+                string? oldipaddr = ConfigManager.GetConfig(ConfigEnum.COREDEVICE_IP);
 
-            string ipstr = IP.ToString();
-
-            ConfigManager.SetConfig(ConfigEnum.COREDEVICE_IP, ipstr);
+                if(ipaddr != oldipaddr && ipaddr != null)
+                {
+                    ConfigManager.SetConfig(ConfigEnum.COREDEVICE_IP, ipaddr);
+                    Console.WriteLine($"Updated Core Device IP Address ({oldipaddr} ==> {ipaddr})");
+                }
+            }
 
             return Ok("success");
         }

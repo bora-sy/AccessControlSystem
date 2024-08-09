@@ -16,6 +16,7 @@ private:
     static AsyncWebServer server;
 
     static void HandleRoot(AsyncWebServerRequest *request);
+    static void HandlePing(AsyncWebServerRequest *request);
     static void HandleAction(AsyncWebServerRequest *request);
 
     static String CommKey;

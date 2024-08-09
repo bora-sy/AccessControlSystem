@@ -2,6 +2,9 @@
 #include "DataSaving.h"
 #include "IO/MelodyPlayer.h"
 
+#define CONFIGPATH_WIFI "/wifi.cfg"
+#define CONFIGPATH_OTA  "/ota.cfg"
+#define CONFIGPATH_WEB  "/web.cfg"
 
 
 struct WiFiConfig
@@ -41,6 +44,7 @@ class Config
 private:
     static bool LoadConfig(const char* path, void* config, size_t size);
     static bool SaveConfig(const char* path, void* config, size_t size);
+
 public:
     static WiFiConfig wifiConfig;
     static OTAConfig otaConfig;
@@ -48,4 +52,7 @@ public:
     const static uint8_t ServerIPAddress[];
     
     static bool Initialize();
+
+    static bool UpdateWebConfig();
+    
 };

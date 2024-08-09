@@ -9,6 +9,8 @@ namespace ACSBackend.Comms
 {
     public static class DeviceCommMain
     {
+        private const string BACKENDUSERAGENT = "ACS_Backend";
+
         const int DEVICE_PORT = 80;
 
         private static AppDBContext DB = null!;
@@ -39,6 +41,7 @@ namespace ACSBackend.Comms
                 HttpRequestMessage msg = new HttpRequestMessage(HttpMethod.Post, url);
                 try
                 {
+                    msg.Headers.Add("User-Agent", BACKENDUSERAGENT);
                     msg.Headers.Add("CommKey", CoreCommKey);
 
                     HttpResponseMessage response = await client.SendAsync(msg);

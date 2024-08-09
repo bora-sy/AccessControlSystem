@@ -5,6 +5,7 @@
 #include "RemoteLogging.h"
 
 #define REQUEST_TIMEOUT 3000
+#define USER_AGENT "ACS_CORE"
 
 struct WebResponse
 {
@@ -25,6 +26,8 @@ class WebClient
     static WebResponse SendRequest(String path, char* method);
 
     public:
-    static void Initialize();
+    static bool Initialize();
+
+    static bool PingServer();
 };
 

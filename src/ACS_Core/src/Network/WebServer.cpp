@@ -11,6 +11,7 @@ void WebServer::Initialize()
     CommKey = config.CommKey;
 
     server.on("/", HTTP_GET, HandleRoot);
+    server.on("/ping", HTTP_GET, HandlePing);
     server.on("/action", HTTP_POST, HandleAction);
 
     server.begin();
@@ -24,6 +25,26 @@ void WebServer::HandleRoot(AsyncWebServerRequest *request)
 {
     REMOTELOG_D("Received Root HTTP Request");
     request->send(200, "text/plain", "Uptime: " + String(millis()));
+}
+
+void WebServer::HandlePing(AsyncWebServerRequest *request)
+{
+    if(!ValidateRequest(request)) return;
+    
+    REMOTELOG_D("Received Ping HTTP Request");
+
+    uint8_t* newIP = (uint8_t*)request->client()->getRemoteAddress();
+    
+    request->send(200, "text/plain", String(millis()));
+
+    if(memcmp(newIP, Config::webConfig.ServerIP, 4) != 0) return;
+
+    memcpy(Config::webConfig.ServerIP, newIP, 4);
+
+    //Config::SaveConfig(CONFIGPATH_WEB, &Config::webConfig, sizeof(WebConfig));
+
+    REMOTELOG_I("Backend IP Address Changed (%d.%d.%d.%d ==> %d.%d.%d.%d)", );
+
 }
 
 void WebServer::HandleAction(AsyncWebServerRequest *request)

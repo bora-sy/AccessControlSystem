@@ -10,9 +10,9 @@ const uint8_t Config::ServerIPAddress[] = {192,168,29,190};
 bool Config::Initialize()
 {
     if (
-        !LoadConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig)) ||
-        !LoadConfig("/ota.cfg", &otaConfig, sizeof(OTAConfig)) ||
-        !LoadConfig("/web.cfg", &webConfig, sizeof(WebConfig)))
+        !LoadConfig(CONFIGPATH_WIFI, &wifiConfig, sizeof(WiFiConfig)) ||
+        !LoadConfig(CONFIGPATH_OTA, &otaConfig, sizeof(OTAConfig)) ||
+        !LoadConfig(CONFIGPATH_WEB, &webConfig, sizeof(WebConfig)))
     {
 
         Melody failMelody;

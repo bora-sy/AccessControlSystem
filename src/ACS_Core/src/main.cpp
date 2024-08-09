@@ -8,6 +8,7 @@
 #include "Network/OTA.h"
 #include "Network/WebServer.h"
 #include "RemoteLogging.h"
+#include "Network/WebClient.h"
 
 void InitCritical(bool (*initFunc)(), const char* loadingText, const char* errorText)
 {
@@ -57,6 +58,7 @@ void setup()
   InitCritical(Config::Initialize, "Initializing Config", "Config failed to initialize");
   InitCritical(NetworkMain::Initialize, "Initializing NetworkMain", "NetworkMain failed to initialize");
   InitCritical(RemoteLogging::Initialize, "Initializing RemoteLogging", "RemoteLogging failed to init");
+  InitCritical(WebClient::Initialize, "Initializing WebClient", "WebClient failed to initialize");
   
   InitOther(WebServer::Initialize, "WebServer");
   InitOther(OTA::Initialize, "OTA");
