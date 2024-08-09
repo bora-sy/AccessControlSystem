@@ -9,9 +9,6 @@ const uint8_t Config::ServerIPAddress[] = {192,168,29,190};
 
 bool Config::Initialize()
 {
-    wifiConfig = WiFiConfig("TEST", "***REMOVED***");
-    SaveConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig));
-
     if (
         !LoadConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig)) ||
         !LoadConfig("/ota.cfg", &otaConfig, sizeof(OTAConfig)) ||
