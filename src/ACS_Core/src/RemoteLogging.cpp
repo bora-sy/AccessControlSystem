@@ -1,14 +1,20 @@
 #include "RemoteLogging.h"
 
 AsyncUDP* RemoteLogging::udp;
+bool RemoteLogging::Initialized = false;
 
 bool RemoteLogging::Initialize()
 {
     ESP_LOGI("RemoteLogging", "Initializing RemoteLogging");
     udp = new AsyncUDP();
-    bool udpsuc = udp->connect(IPAddress(Config::ServerIPAddress), 1256);
+
+    bool udpsuc = udp->connect(IPAddress(Config::webConfig.ServerIP), 1256);
+
+    // TODO: Change the target UDP Server when the IP address is changed
+
     if(udpsuc)
     {
+        Initialized = true;
         ESP_LOGI("RemoteLogging", "RemoteLogging Initialized");
     }
     else ESP_LOGE("RemoteLogging", "RemoteLogging Failed to Initialize");
@@ -17,6 +23,7 @@ bool RemoteLogging::Initialize()
 }
 
 void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineNum,  esp_log_level_t level, ...) {
+    if(!Initialized) return;
     va_list args;
     va_start(args, level);
 
@@ -42,25 +49,24 @@ void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineN
     memcpy(buf + 13 + strlen(text) + 1, filename, strlen(filename));
 
     udp->write(buf, bufLength);
+
+    Serial.printf("LOG: %s\n", text);
     
 
 }
 
-char* RemoteLogging::FormatString(const char* format, ...) {
+String RemoteLogging::FormatString(const char* format, ...) {
     va_list args;
     va_start(args, format);
 
     int size = vsnprintf(nullptr, 0, format, args) + 1; 
     va_end(args);
 
-    char* buffer = (char*)malloc(size);
-    if (!buffer) {
-        return nullptr;
-    }
+    char buffer[size];
 
     va_start(args, format);
     vsnprintf(buffer, size, format, args);
     va_end(args);
 
-    return buffer;
+    return String(buffer);
 }

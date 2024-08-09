@@ -49,7 +49,6 @@ public:
     static WiFiConfig wifiConfig;
     static OTAConfig otaConfig;
     static WebConfig webConfig;
-    const static uint8_t ServerIPAddress[];
     
     static bool Initialize();
 

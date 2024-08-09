@@ -34,16 +34,18 @@ void WebServer::HandlePing(AsyncWebServerRequest *request)
     REMOTELOG_D("Received Ping HTTP Request");
 
     uint8_t* newIP = (uint8_t*)request->client()->getRemoteAddress();
+    uint8_t oldIP[4];
+    memcpy(oldIP, Config::webConfig.ServerIP, 4);
     
     request->send(200, "text/plain", String(millis()));
 
-    if(memcmp(newIP, Config::webConfig.ServerIP, 4) != 0) return;
+    if(memcmp(newIP, oldIP, 4) == 0 || request->getHeader("User-Agent")->value() != "ACS_Backend") return;
 
     memcpy(Config::webConfig.ServerIP, newIP, 4);
 
-    //Config::SaveConfig(CONFIGPATH_WEB, &Config::webConfig, sizeof(WebConfig));
-
-    REMOTELOG_I("Backend IP Address Changed (%d.%d.%d.%d ==> %d.%d.%d.%d)", );
+    bool updSuc = Config::UpdateWebConfig();
+    if(!updSuc) REMOTELOG_E("Failed to change Backend IP Address");
+    else REMOTELOG_I("Backend IP Address Changed (%d.%d.%d.%d ==> %d.%d.%d.%d)", oldIP[0],oldIP[1],oldIP[2],oldIP[3], newIP[0],newIP[1],newIP[2],newIP[3]);
 
 }
 

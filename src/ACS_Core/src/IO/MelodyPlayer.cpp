@@ -62,9 +62,10 @@ void MelodyPlayer::t_melodyplayer(void *args)
         }
 
         Melody currentMelody = melodySlot;
-        melodySlot.toneCount = 0;
 
         if(melodySlot.toneCount == 0) continue;
+        
+        melodySlot.toneCount = 0;
         REMOTELOG_D("Playing new melody");
 
         for (int i = 0; i < currentMelody.toneCount; i++)

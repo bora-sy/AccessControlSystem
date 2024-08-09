@@ -8,7 +8,7 @@ namespace ACSBackend.Comms.WebServer.Filters
         public override async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (string.IsNullOrEmpty(DeviceCommMain.FrontCommKey)) return; // TODO: LOG
-            if (context.HttpContext.Request.Headers.Authorization == DeviceCommMain.FrontCommKey)
+            if (context.HttpContext.Request.Headers["CommKey"] == DeviceCommMain.FrontCommKey)
             {
                 await next();
                 return;

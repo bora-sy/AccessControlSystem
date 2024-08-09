@@ -5,8 +5,6 @@ WiFiConfig Config::wifiConfig;
 OTAConfig Config::otaConfig;
 WebConfig Config::webConfig;
 
-const uint8_t Config::ServerIPAddress[] = {192,168,29,190};
-
 bool Config::Initialize()
 {
     if (
@@ -61,7 +59,10 @@ bool Config::SaveConfig(const char *path, void *config, size_t size)
     return true;
 }
 
-
+bool Config::UpdateWebConfig()
+{
+    return SaveConfig(CONFIGPATH_WEB, &webConfig, sizeof(WebConfig));
+}
 
 //-----------------------------------------------------------
 

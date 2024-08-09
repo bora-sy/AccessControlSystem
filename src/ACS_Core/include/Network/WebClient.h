@@ -21,9 +21,10 @@ class WebClient
 {
     private:
     static String commKey;
-    static String baseURL;
 
-    static WebResponse SendRequest(String path, char* method);
+    static WebResponse SendRequest(String path, const char* method);
+
+    static String BuildURL(String path);
 
     public:
     static bool Initialize();
