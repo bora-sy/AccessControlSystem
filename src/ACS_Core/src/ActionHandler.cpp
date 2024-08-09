@@ -18,9 +18,17 @@ void ActionHandler::Initialize()
     bool doorLocked = Lock::IsDoorClosed();
     CurrentState = doorLocked ? LOCKED : UNLOCKED;
 
-    if(CurrentState == UNLOCKED) action_Unlock();
+    if(doorLocked) CurrentState = LOCKED;
+    else
+    {
+        action_Unlock();
+        CurrentState = UNLOCKED;
+    }
+    
 
     xTaskCreate(t_DoorHandler, "DoorHandler", 4096, NULL, 1, NULL);
+
+    REMOTELOG_I("ActionHandler Initialized");
 }
 
 void ActionHandler::InitializeMelodies()
@@ -52,7 +60,6 @@ void ActionHandler::ExecuteAction(Action act)
 
 ActionRequestResult ActionHandler::Unlock()
 {
-    ESP_LOGI(TAG, "Unlock requested (Current State: %d)", CurrentState);
     if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN || CurrentState == DISENGAGED) return ALREADY_UNLOCKED;
     ExecuteAction(UNLOCK);
     return SUCCESS;
@@ -79,31 +86,36 @@ void ActionHandler::t_DoorHandler(void *args)
 {
     for (;;)
     {
-
         AlarmCheck();
 
         if(CurrentState == LOCKED && !Lock::IsDoorClosed() && millis() - Time_DoorLocked < DOOR_LOCK_TIMEOUT)
         {
+            REMOTELOG_D("Locked but door is not closed. Unlocking...");
+
             action_Unlock();
         }
 
         if(CurrentState == UNLOCKED && Lock::IsDoorClosed())
         {
+            REMOTELOG_D("Door closed. Locking...");
+
             action_Lock();
             Time_DoorLocked = millis();
         }
 
         if(CurrentState == UNLOCKED_WAITINGDOOROPEN && !Lock::IsDoorClosed())
         {
+            REMOTELOG_D("Door open. Unlocked: stage 2");
             CurrentState = UNLOCKED;
-            Serial.println("Door Unlocked");
         }
 
         switch (TargetAction)
         {
+            case NONE: break;
             case UNLOCK: action_Unlock(); break;
             case ENGAGE: action_Engage(); break;
             case DISENGAGE: action_Disengage(); break;
+            default: REMOTELOG_W("Unknown target action %d", TargetAction); break;
         }
 
         TargetAction = NONE;
@@ -114,6 +126,7 @@ void ActionHandler::t_DoorHandler(void *args)
 void ActionHandler::AlarmCheck()
 {
     if(CurrentState != LOCKED || Lock::IsDoorClosed() || millis() - Time_DoorLocked < DOOR_LOCK_TIMEOUT) return;
+    REMOTELOG_W("ALARM");
 
     MelodyPlayer::SetAlarm(true);
 
@@ -127,12 +140,14 @@ void ActionHandler::AlarmCheck()
 
 void ActionHandler::PreAlarm()
 {
-    ESP_LOGW(TAG, "PRE-ALARM");
+    REMOTELOG_D("PREALARM MODE");
+
     ulong canBeCancelledUntil = millis() + 730;
     while(millis() <= canBeCancelledUntil)
     {
         if(Lock::IsDoorClosed())
         {
+            REMOTELOG_W("Alarm aborted");
             MelodyPlayer::SetAlarm(false);
             return;
         }
@@ -142,7 +157,8 @@ void ActionHandler::PreAlarm()
 
 void ActionHandler::Alarm()
 {
-    ESP_LOGW(TAG, "ALARM");
+    REMOTELOG_D("ALARM MODE");
+
     for(;;)
     {
         delay(10);
@@ -151,8 +167,14 @@ void ActionHandler::Alarm()
 
 void ActionHandler::action_Lock(bool useFeedback)
 {
-    if(CurrentState == LOCKED || !Lock::IsDoorClosed()) return;
+    REMOTELOG_I("Action Lock Triggered");
 
+    if(CurrentState == LOCKED || !Lock::IsDoorClosed())
+    {
+        REMOTELOG_W("Door is already locked or not closed. Aborting lock action.");
+        return;
+    }
+    
     CurrentState = LOCKED;
 
     if(useFeedback)
@@ -162,13 +184,17 @@ void ActionHandler::action_Lock(bool useFeedback)
 
 
     Lock::SetSolenoid(false);
-    
-    Serial.println("Door Locked");
 }
 
 void ActionHandler::action_Unlock(bool useFeedback)
 {
-    if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN || CurrentState == DISENGAGED) return;
+    REMOTELOG_I("Action Unlock Triggered");
+
+    if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN || CurrentState == DISENGAGED)
+    {
+        REMOTELOG_W("Door is already unlocked or disengaged. Aborting unlock action.");
+        return;
+    }
 
     CurrentState = UNLOCKED_WAITINGDOOROPEN;
 
@@ -183,14 +209,17 @@ void ActionHandler::action_Unlock(bool useFeedback)
     Lock::SetSolenoid(false);
     delay(200);
     Lock::SetSolenoid(true);
-
-
-    Serial.println("Door Unlocked (Waiting for door to open)");
 }
 
 void ActionHandler::action_Engage(bool useFeedback)
 {
-    if(CurrentState != DISENGAGED) return;
+    REMOTELOG_I("Action Engage Triggered");
+
+    if(CurrentState != DISENGAGED)
+    {
+        REMOTELOG_W("Door is already engaged. Aborting engage action.");
+        return;
+    }
 
     if(Lock::IsDoorClosed())
     {
@@ -209,7 +238,13 @@ void ActionHandler::action_Engage(bool useFeedback)
 
 void ActionHandler::action_Disengage(bool useFeedback)
 {
-    if(CurrentState == DISENGAGED) return;
+    REMOTELOG_I("Action Disengage Triggered");
+    
+    if(CurrentState == DISENGAGED)
+    {
+        REMOTELOG_W("Door is already disengaged. Aborting disengage action.");
+        return;
+    }
 
     CurrentState = DISENGAGED;
     

@@ -4,10 +4,8 @@
 AsyncWebServer WebServer::server(80);
 String WebServer::CommKey = "";
 
-bool WebServer::Initialize()
+void WebServer::Initialize()
 {
-    ESP_LOGI(TAG, "Initializing WebServer");
-
     WebServerConfig config = Config::webServerConfig;
 
     CommKey = config.CommKey;
@@ -17,14 +15,14 @@ bool WebServer::Initialize()
 
     server.begin();
 
-    ESP_LOGI(TAG, "WebServer initialized (%s)", CommKey.c_str());
-    return true;
+    REMOTELOG_I("WebServer Initialized (%s)", CommKey.c_str());
 }
 
 // HANDLERS
 
 void WebServer::HandleRoot(AsyncWebServerRequest *request)
 {
+    REMOTELOG_D("Received Root HTTP Request");
     request->send(200, "text/plain", "Uptime: " + String(millis()));
 }
 
@@ -36,14 +34,14 @@ void WebServer::HandleAction(AsyncWebServerRequest *request)
 
     ActionRequestResult actionResult;
 
-    ESP_LOGI(TAG, "Received Action HTTP Request (Action: %s)", action.c_str());
+    REMOTELOG_D("Received Action HTTP Request (Action: %s)", action.c_str());
 
     if(action == "unlock") actionResult = ActionHandler::Unlock();
     else if(action == "disengage") actionResult = ActionHandler::Disengage();
     else if(action == "engage") actionResult = ActionHandler::Engage();
     else
     {
-        ESP_LOGI(TAG, "Invalid action: %s", action.c_str());
+        REMOTELOG_W("Invalid action: %s", action.c_str());
         request->send(400, "text/plain", "Invalid action");
         return;
     }
@@ -57,7 +55,7 @@ bool WebServer::ValidateRequest(AsyncWebServerRequest *request)
 {
     if(!request->hasHeader("CommKey"))
     {
-        ESP_LOGI(TAG, "CommKey not found in request");
+        REMOTELOG_W("CommKey not found in request");
         request->send(401, "text/plain", "Unauthorized");
         return false;
     }
@@ -66,7 +64,7 @@ bool WebServer::ValidateRequest(AsyncWebServerRequest *request)
 
     if(_commKey != CommKey)
     {
-        ESP_LOGI(TAG, "Invalid CommKey: %s", _commKey.c_str());
+        REMOTELOG_W("Invalid CommKey: %s", _commKey.c_str());
         request->send(401, "text/plain", "Unauthorized");
         return false;
     }

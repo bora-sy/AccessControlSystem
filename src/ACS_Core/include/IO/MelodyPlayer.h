@@ -2,6 +2,7 @@
 
 #include <Arduino.h>
 #include "Pinout.h"
+#include "RemoteLogging.h"
 
 #define MELODY_MAXTONECOUNT 100
 

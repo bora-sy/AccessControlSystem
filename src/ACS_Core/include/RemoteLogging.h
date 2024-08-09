@@ -14,9 +14,9 @@ class RemoteLogging
 private:
     static AsyncUDP* udp;
 
-    static char* FormatString(const char* format, ...);
 
 public:
+    static char* FormatString(const char* format, ...);
     static bool Initialize();
     static void Log(const char* format, const char* filename, uint32_t lineNum,  esp_log_level_t level, ...);
 };

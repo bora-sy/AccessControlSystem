@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include "IO/Lock.h"
 #include "IO/MelodyPlayer.h"
-#include "esp_log.h"
+#include "RemoteLogging.h"
 
 #define DOOR_LOCK_TIMEOUT 5000
 

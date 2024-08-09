@@ -10,6 +10,7 @@ void Lock::Initialize()
 
 void Lock::SetSolenoid(bool state)
 {
+    REMOTELOG_D("New Solenoid State: %d", state);
     digitalWrite(PIN_SOLENOID, state);
 }
 

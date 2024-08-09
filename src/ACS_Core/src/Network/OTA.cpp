@@ -5,36 +5,28 @@ AsyncWebServer OTA::OTAServer(81);
 
 unsigned long ota_progress_millis = 0;
 
-void onOTAStart() {
-  // Log when OTA has started
-  Serial.println("OTA update started!");
-  // <Add your own code here>
+void OTA::onOTAStart() {
+  REMOTELOG_I("OTA update started");
 }
 
-void onOTAProgress(size_t current, size_t final) {
+void OTA::onOTAProgress(size_t current, size_t final) {
   // Log every 1 second
   if (millis() - ota_progress_millis > 1000) {
     ota_progress_millis = millis();
-    Serial.printf("OTA Progress Current: %u bytes, Final: %u bytes\n", current, final);
+    REMOTELOG_I("OTA Progress Current: %u bytes, Final: %u bytes", current, final);
   }
 }
 
-void onOTAEnd(bool success) {
-  // Log when OTA has finished
-  if (success) {
-    Serial.println("OTA update finished successfully!");
-  } else {
-    Serial.println("There was an error during OTA update!");
-  }
-  // <Add your own code here>
+void OTA::onOTAEnd(bool success) {
+
+  if(success) REMOTELOG_I("OTA update finished successfully");
+  else REMOTELOG_E("There was an error during OTA update");
 }
 
 
 
-bool OTA::Initialize()
+void OTA::Initialize()
 {
-    ESP_LOGI(TAG, "Initializing OTA");
-
     OTAConfig config = Config::otaConfig;
     
     OTAServer.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -44,15 +36,13 @@ bool OTA::Initialize()
 
     ElegantOTA.begin(&OTAServer, config.Username, config.Password);
 
-  ElegantOTA.onStart(onOTAStart);
-  ElegantOTA.onProgress(onOTAProgress);
-  ElegantOTA.onEnd(onOTAEnd);
+    ElegantOTA.onStart(onOTAStart);
+    ElegantOTA.onProgress(onOTAProgress);
+    ElegantOTA.onEnd(onOTAEnd);
 
     OTAServer.begin();
 
-    ESP_LOGI(TAG, "OTA Server Initialized (Username: %s / Password: %s)", config.Username, config.Password);
-
-    return true;
+    REMOTELOG_I(TAG, "OTA Server Initialized (Username: %s / Password: %s)", config.Username, config.Password);
 }
 
 void OTA::Loop()

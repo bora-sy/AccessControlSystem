@@ -35,6 +35,7 @@ void MelodyPlayer::PlayMelody(Melody melody)
 
 void MelodyPlayer::SetAlarm(bool state)
 {
+    REMOTELOG_D("Alarm State: %d", state);
     alarm = state;
 }
 
@@ -56,7 +57,6 @@ void MelodyPlayer::t_melodyplayer(void *args)
                     break;
             }
 
-
             while (alarm)
                 alarmCycle();
         }
@@ -64,22 +64,28 @@ void MelodyPlayer::t_melodyplayer(void *args)
         Melody currentMelody = melodySlot;
         melodySlot.toneCount = 0;
 
+        if(melodySlot.toneCount == 0) continue;
+        REMOTELOG_D("Playing new melody");
+
         for (int i = 0; i < currentMelody.toneCount; i++)
         {
             if (melodySlot.toneCount != 0)
             {
-                ledcWriteTone(BUZZER_CHANNEL, 0);
+                REMOTELOG_W("Melodies conflicted. Aborting previous melody.");
                 break;
             }
 
             ledcWriteTone(BUZZER_CHANNEL, currentMelody.tones[i]);
             delay(currentMelody.toneDurations[i]);
             if (alarm)
+            {
+                REMOTELOG_D("Alarm mode active, aborting current melody.");
                 break;
+            }
         }
 
         ledcWriteTone(BUZZER_CHANNEL, 0);
-        delay(1);
+        delay(5);
     }
 }
 
