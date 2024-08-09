@@ -9,7 +9,7 @@ const uint8_t Config::ServerIPAddress[] = {192,168,29,190};
 
 bool Config::Initialize()
 {
-    wifiConfig = WiFiConfig("TEST", "TEST");
+    wifiConfig = WiFiConfig("TEST", "");
     SaveConfig("/wifi.cfg", &wifiConfig, sizeof(WiFiConfig));
 
     if (
