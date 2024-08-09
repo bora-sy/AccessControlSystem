@@ -22,24 +22,42 @@ namespace LogViewer
 
             Console.WriteLine("Session started");
 
-            while (true)
+            Task.Run(async delegate ()
             {
-                try
+                while (true)
                 {
-                    var data = listener.ReceiveAsync().Result;
-                    byte[] buf = data.Buffer;
+                    try
+                    {
+                        var data = listener.ReceiveAsync().Result;
+                        byte[] buf = data.Buffer;
 
-                    if (buf.Length <= 9) throw new Exception("Invalid data length");
+                        if (buf.Length <= 9) throw new Exception("Invalid data length");
 
-                    RemoteLog log = new RemoteLog(buf);
+                        RemoteLog log = new RemoteLog(buf);
 
-                    Log(log);
+                        Log(log);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"UDP EX: {ex.Message}");
+                    }
                 }
-                catch (Exception ex)
+            });
+
+
+            while(true)
+            {
+                string? act = Console.ReadLine();
+                if (act == null) continue;
+                act = act.ToLower();
+
+                switch(act)
                 {
-                    Console.WriteLine($"UDP EX: {ex.Message}");
+                    case "clear": Console.Clear(); break;
+                    case "reconn": RedirectLogs(credentials).Wait(); break;
                 }
             }
+
         }
 
 

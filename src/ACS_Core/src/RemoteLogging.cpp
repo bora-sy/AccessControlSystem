@@ -17,9 +17,17 @@ bool RemoteLogging::Initialize()
 }
 
 void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineNum,  esp_log_level_t level, ...) {
-    
-    char* text = RemoteLogging::FormatString(format);
-    if (text == nullptr) return;
+    va_list args;
+    va_start(args, level);
+
+    int size = vsnprintf(nullptr, 0, format, args) + 1; 
+    va_end(args);
+
+    char text[size];
+
+    va_start(args, level);
+    vsnprintf(&text[0], size, format, args);
+    va_end(args);    
 
     uint16_t bufLength = 1 + 8 + 4 + strlen(text) + 1 + strlen(filename) + 1;
 
@@ -33,8 +41,9 @@ void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineN
     memcpy(buf + 13, text, strlen(text));
     memcpy(buf + 13 + strlen(text) + 1, filename, strlen(filename));
 
-
     udp->write(buf, bufLength);
+    
+
 }
 
 char* RemoteLogging::FormatString(const char* format, ...) {

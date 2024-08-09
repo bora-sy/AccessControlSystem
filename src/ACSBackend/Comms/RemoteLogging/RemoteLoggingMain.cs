@@ -58,6 +58,8 @@ namespace ACSBackend.Comms.RemoteLogging
 
         private static void Logger_OnLog(RemoteLog obj)
         {
+            Console.WriteLine($"Received Log {obj.Message}");
+
             if(RedirectClient != null)
             {
                 RedirectClient.Send(obj.Original, obj.Original.Length);
