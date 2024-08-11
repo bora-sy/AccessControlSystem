@@ -40,6 +40,7 @@ enum ActionRequestResult
     ALREADY_UNLOCKED,
     ALREADY_ENGAGED,
     ALREADY_DISENGAGED,
+    ALARM_NOT_ACTIVE
 };
 
 enum DoorState
@@ -63,6 +64,8 @@ class ActionHandler
     static ulong UnlockTimeout;
 
     static DoorState CurrentState;
+
+    static bool AlarmOn;
     
     static void t_DoorHandler(void *args);
 
@@ -91,4 +94,5 @@ class ActionHandler
     static ActionRequestResult Unlock(ActionSource src);
     static ActionRequestResult Engage(ActionSource src);
     static ActionRequestResult Disengage(ActionSource src);
+    static ActionRequestResult AbortAlarm(ActionSource src);
 };

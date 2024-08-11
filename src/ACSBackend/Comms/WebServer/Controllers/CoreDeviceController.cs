@@ -34,10 +34,10 @@ namespace ACSBackend.Comms.WebServer.Controllers
         }
 
         [HttpPost("logalarm")]
-        public IActionResult LogAlarm(bool preAlarm)
+        public IActionResult LogAlarm(bool prealarm, bool status)
         {
-            Console.WriteLine($"ALARM RECEIVED (PREALARM: {preAlarm})");
-            return Ok("TEMP");
+
+            return Ok();
         }
 
     }

@@ -90,6 +90,7 @@ void WebServer::HandleAction(AsyncWebServerRequest *request)
     case Action::UNLOCK: actionResult = ActionHandler::Unlock(src); break;
     case Action::DISENGAGE: actionResult = ActionHandler::Disengage(src); break;
     case Action::ENGAGE: actionResult = ActionHandler::Engage(src); break;
+    case Action::ABORTALARM: actionResult = ActionHandler::AbortAlarm(src); break;
     
     default:
         REMOTELOG_E("Invlid action reached switch: %d", action_int);

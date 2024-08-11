@@ -128,15 +128,20 @@ bool WebClient::PingServer()
     return true;
 }
 
-void WebClient::LogAlarm(bool preAlarm)
+void WebClient::LogAlarm(bool preAlarm, bool alarmStatus)
 {
-    bool *__preAlarm = new bool(preAlarm);
+    bool* arr = new bool[2];
+    arr[0] = preAlarm;
+    arr[1] = alarmStatus;
 
     xTaskCreate([](void *arg)
     {
-        bool b = *(bool*)arg;
+        bool* vals = (bool*)arg;
 
-        WebResponse response = SendRequest("/coredevice/logalarm?prealarm=" + b ? "1" : "0", "POST");
+        String url = RemoteLogging::FormatString("/coredevice/logalarm?prealarm=%d&status=%d", vals[0], vals[1]);
+        delete[] vals;
+        
+        WebResponse response = SendRequest(url, "POST");
         if(response.HttpCode != 200)
         {
             REMOTELOG_W("Failed to log alarm to server. (HTTP Code: %d)", response.HttpCode);
@@ -144,7 +149,7 @@ void WebClient::LogAlarm(bool preAlarm)
 
         vTaskDelete(NULL);
 
-    }, "LogAlarmT", 2048, __preAlarm, 1, NULL);
+    }, "LogAlarmT", 2048, arr, 1, NULL);
 }
 
 //----------------------------------------
