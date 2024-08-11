@@ -3,6 +3,7 @@
 #include "IO/Lock.h"
 #include "IO/MelodyPlayer.h"
 #include "RemoteLogging.h"
+#include "Network/WebClient.h"
 
 #define DOOR_LOCK_TIMEOUT 5000
 
@@ -23,13 +24,14 @@ enum ActionSource
     Web
 };
 
-#define ACTION_MAXVALUE 3
+#define ACTION_MAXVALUE 4
 enum Action
 {
     ACTNONE = 0,
     UNLOCK,
     ENGAGE,
-    DISENGAGE
+    DISENGAGE,
+    ABORTALARM
 };
 
 enum ActionRequestResult

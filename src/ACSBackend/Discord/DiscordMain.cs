@@ -53,6 +53,7 @@ namespace BKDijitalYoklamaBackend.Discord
                 "unlock" => DeviceAction.Unlock,
                 "disengage" => DeviceAction.Disengage,
                 "engage" => DeviceAction.Engage,
+                "abortalarm" => DeviceAction.AbortAlarm
                 _ => (DeviceAction)(-1)
             };
 

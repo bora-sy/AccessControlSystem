@@ -31,5 +31,7 @@ class WebClient
     static bool Initialize();
 
     static bool PingServer();
+    
+    static void LogAlarm(bool preAlarm);
 };
 

@@ -38,7 +38,8 @@ namespace ACSBackend.Comms.DeviceComm
             NONE = 0,
             Unlock,
             Engage,
-            Disengage
+            Disengage,
+            AbortAlarm
         }
 
         public enum DeviceActionSource

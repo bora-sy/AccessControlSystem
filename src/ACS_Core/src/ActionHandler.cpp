@@ -124,6 +124,7 @@ void ActionHandler::t_DoorHandler(void *args)
             case UNLOCK: action_Unlock(TargetActionSource); break;
             case ENGAGE: action_Engage(); break;
             case DISENGAGE: action_Disengage(); break;
+            case ABORTALARM: REMOTELOG_I("Received Abort Alarm.. Ignoring"); break;
             default: REMOTELOG_W("Unknown target action %d", TargetAction); break;
         }
 
@@ -151,6 +152,7 @@ void ActionHandler::AlarmCheck()
 void ActionHandler::PreAlarm()
 {
     REMOTELOG_D("PREALARM MODE");
+    WebClient::LogAlarm(true);
 
     ulong canBeCancelledUntil = millis() + 730;
     while(millis() <= canBeCancelledUntil)
@@ -168,10 +170,16 @@ void ActionHandler::PreAlarm()
 void ActionHandler::Alarm()
 {
     REMOTELOG_D("ALARM MODE");
+    WebClient::LogAlarm(false);
 
     for(;;)
     {
-        delay(10);
+        if(TargetAction == ABORTALARM)
+        {
+            REMOTELOG_I("Alarm Aborted");
+            MelodyPlayer::SetAlarm(false);
+            break;
+        }
     }
 }
 

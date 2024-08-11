@@ -43,13 +43,16 @@ namespace ACSBackend.Discord.Commands
                 var builder = new DiscordMessageBuilder()
                     .AddComponents(
                     new DiscordButtonComponent(ButtonStyle.Success, "action_unlock", "Unlock", false, new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":key:"))),
-                    new DiscordButtonComponent(ButtonStyle.Primary, "action_disengage", "Disengage", false, new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":unlock:"))),
-                    new DiscordButtonComponent(ButtonStyle.Danger, "action_engage", "Engage", false, new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":lock:")))
+                    new DiscordButtonComponent(ButtonStyle.Primary, "action_disengage", "Disengage", false, new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":unlock:")))
+                    )
+                    .AddComponents(
+                    new DiscordButtonComponent(ButtonStyle.Secondary, "action_engage", "Engage", false, new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":lock:"))),
+                    new DiscordButtonComponent(ButtonStyle.Danger, "action_abortalarm", "Abort Alarm", false, new DiscordComponentEmoji(DiscordEmoji.FromName(ctx.Client, ":rotating_light:")))
                     )
                     .AddEmbed(new DiscordEmbedBuilder()
                     {
                         Title = "Actions",
-                        Color = DiscordColor.Orange
+                        Color = DiscordColor.Orange   
                     });
 
                 await ctx.Channel.SendMessageAsync(builder);
