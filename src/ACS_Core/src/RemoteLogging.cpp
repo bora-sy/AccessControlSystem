@@ -9,7 +9,7 @@ bool RemoteLogging::Initialize()
     udp = new AsyncUDP();
 
     bool udpsuc = udp->connect(IPAddress(Config::webConfig.ServerIP), 1256);
-
+    
     // TODO: Change the target UDP Server when the IP address is changed
 
     if(udpsuc)

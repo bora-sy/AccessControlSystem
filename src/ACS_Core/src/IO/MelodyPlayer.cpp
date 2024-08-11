@@ -25,7 +25,7 @@ void MelodyPlayer::Initialize()
     ledcSetup(BUZZER_CHANNEL, 5000, 8);
     ledcAttachPin(PIN_BUZZER, BUZZER_CHANNEL);
 
-    xTaskCreate(t_melodyplayer, "MelodyPlayer", 2048, NULL, 1, NULL);
+    xTaskCreate(t_melodyplayer, "MelodyPlayer", 4096, NULL, 1, NULL);
 }
 
 void MelodyPlayer::PlayMelody(Melody melody)
@@ -62,16 +62,13 @@ void MelodyPlayer::t_melodyplayer(void *args)
         }
 
         Melody currentMelody = melodySlot;
-
-        if(melodySlot.toneCount == 0) continue;
-        
         melodySlot.toneCount = 0;
-        REMOTELOG_D("Playing new melody");
 
         for (int i = 0; i < currentMelody.toneCount; i++)
         {
             if (melodySlot.toneCount != 0)
             {
+                ledcWriteTone(BUZZER_CHANNEL, 0);
                 REMOTELOG_W("Melodies conflicted. Aborting previous melody.");
                 break;
             }

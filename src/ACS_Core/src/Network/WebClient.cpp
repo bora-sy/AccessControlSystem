@@ -11,7 +11,7 @@ bool WebClient::Initialize()
 
 
     pingingMelody.AddNote(600, 100);
-    pingingMelody.AddRest(500);
+    pingingMelody.AddRest(50);
     pingingMelody.AddNote(1200, 100);
 
     pingSucMelody.AddNote(600, 100);
@@ -30,34 +30,44 @@ bool WebClient::Initialize()
     pingFailedMelody.AddRest(50);
     pingFailedMelody.AddNote(500, 100);
 
-    REMOTELOG_I("TESTING MELODIES...");
+    REMOTELOG_I("Initializing WebClient");
+    WebConfig config = Config::webConfig;
+    commKey = config.CommKey;
 
-    delay(5000);
-    REMOTELOG_I("Pinging Melody");
-    MelodyPlayer::PlayMelody(pingingMelody);
-    
-    delay(5000);
-    REMOTELOG_I("PingFailedMelody");
-    MelodyPlayer::PlayMelody(pingFailedMelody);
+    bool pingSuc = false;
 
-    delay(5000);
-    REMOTELOG_I("PingSucMelody");
-    MelodyPlayer::PlayMelody(pingSucMelody);
-    
-    delay(5000);
-    REMOTELOG_I("FailedMelody");
-    MelodyPlayer::PlayMelody(failedMelody);
-    
-    bool pingRes = PingServer();
-
-    if(!pingRes)
+    for(int i = 0; i<20; i++)
     {
-        REMOTELOG_W("WebClient Initialization Failed. Failed to ping server. (CommKey: %s / Backend IP Address: %d.%d.%d.%d)", commKey.c_str(), config.ServerIP[0],config.ServerIP[1] ,config.ServerIP[2], config.ServerIP[3]);
-        return false;
+        config = Config::webConfig;
+        REMOTELOG_I("Pinging server [%d] (IP Addr: %d.%d.%d.%d)",i , config.ServerIP[0],config.ServerIP[1] ,config.ServerIP[2], config.ServerIP[3]);
+        MelodyPlayer::PlayMelody(pingingMelody);
+        
+        bool pingRes = PingServer();
+        if(pingRes)
+        {
+            pingSuc = true;
+            break;
+        }
+        else
+        {
+            REMOTELOG_I("Server Ping Failed");
+        
+            MelodyPlayer::PlayMelody(pingFailedMelody);
+            delay(3000);
+        }
     }
 
+    if(!pingSuc)
+    {
+        MelodyPlayer::PlayMelody(failedMelody);
+        REMOTELOG_W("WebClient Initialization Failed (CommKey: %s / Backend IP Address: %d.%d.%d.%d)", commKey.c_str(), config.ServerIP[0],config.ServerIP[1] ,config.ServerIP[2], config.ServerIP[3]);
+        delay(500);
+        return false;
+    }
+    
+    MelodyPlayer::PlayMelody(pingSucMelody);
     REMOTELOG_I("WebClient Initialized (CommKey: %s / Backend IP Address: %d.%d.%d.%d)", commKey.c_str(), config.ServerIP[0],config.ServerIP[1] ,config.ServerIP[2], config.ServerIP[3]);
-
+    delay(1000);
     return true;
 }
 
