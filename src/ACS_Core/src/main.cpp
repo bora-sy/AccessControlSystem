@@ -42,7 +42,7 @@ void setup()
   Serial.begin(921600);
   MelodyPlayer::Initialize();
 
-  delay(300);
+  delay(350);
 
   Melody startMelody;
   startMelody.AddNote(1000, 250);

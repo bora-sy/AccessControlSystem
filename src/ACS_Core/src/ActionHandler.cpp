@@ -1,10 +1,13 @@
 #include "ActionHandler.h"
 #define TAG "ActionHandler"
 
-Action ActionHandler::TargetAction = NONE;
+Action ActionHandler::TargetAction = Action::ACTNONE;
+ActionSource ActionHandler::TargetActionSource = ActionSource::SRCNONE;
+
 DoorState ActionHandler::CurrentState = LOCKED;
 
 ulong ActionHandler::Time_DoorLocked = 0;
+ulong ActionHandler::UnlockTimeout = 0;
 
 Melody ActionHandler::melody_Unlock;
 Melody ActionHandler::melody_Lock;
@@ -16,12 +19,11 @@ void ActionHandler::Initialize()
     InitializeMelodies();
 
     bool doorLocked = Lock::IsDoorClosed();
-    CurrentState = doorLocked ? LOCKED : UNLOCKED;
 
     if(doorLocked) CurrentState = LOCKED;
     else
     {
-        action_Unlock();
+        action_Unlock(ActionSource::SRCNONE);
         CurrentState = UNLOCKED;
     }
     
@@ -53,29 +55,30 @@ void ActionHandler::InitializeMelodies()
 }
 
 
-void ActionHandler::ExecuteAction(Action act)
+void ActionHandler::ExecuteAction(Action act, ActionSource src)
 {
     TargetAction = act;
+    TargetActionSource = src;
 }
 
-ActionRequestResult ActionHandler::Unlock()
+ActionRequestResult ActionHandler::Unlock(ActionSource src)
 {
     if(CurrentState == UNLOCKED || CurrentState == UNLOCKED_WAITINGDOOROPEN || CurrentState == DISENGAGED) return ALREADY_UNLOCKED;
-    ExecuteAction(UNLOCK);
+    ExecuteAction(UNLOCK, src);
     return SUCCESS;
 }
 
-ActionRequestResult ActionHandler::Engage()
+ActionRequestResult ActionHandler::Engage(ActionSource src)
 {
     if(CurrentState != DISENGAGED) return ALREADY_ENGAGED;
-    ExecuteAction(ENGAGE);
+    ExecuteAction(ENGAGE, src);
     return SUCCESS;
 }
 
-ActionRequestResult ActionHandler::Disengage()
+ActionRequestResult ActionHandler::Disengage(ActionSource src)
 {
     if(CurrentState == DISENGAGED) return ALREADY_DISENGAGED;
-    ExecuteAction(DISENGAGE);
+    ExecuteAction(DISENGAGE, src);
     return SUCCESS;
 }
 
@@ -92,7 +95,7 @@ void ActionHandler::t_DoorHandler(void *args)
         {
             REMOTELOG_D("Locked but door is not closed. Unlocking...");
 
-            action_Unlock();
+            action_Unlock(ActionSource::SRCNONE);
         }
 
         if(CurrentState == UNLOCKED && Lock::IsDoorClosed())
@@ -100,25 +103,32 @@ void ActionHandler::t_DoorHandler(void *args)
             REMOTELOG_D("Door closed. Locking...");
 
             action_Lock();
-            Time_DoorLocked = millis();
         }
+
 
         if(CurrentState == UNLOCKED_WAITINGDOOROPEN && !Lock::IsDoorClosed())
         {
             REMOTELOG_D("Door open. Unlocked: stage 2");
             CurrentState = UNLOCKED;
         }
+        
+        if(CurrentState == UNLOCKED_WAITINGDOOROPEN && millis() < UnlockTimeout && Lock::IsDoorClosed())
+        {
+            REMOTELOG_D("Door unlock timeout reached. Locking...");
+            action_Lock();
+        }
 
         switch (TargetAction)
         {
-            case NONE: break;
-            case UNLOCK: action_Unlock(); break;
+            case ACTNONE: break;
+            case UNLOCK: action_Unlock(TargetActionSource); break;
             case ENGAGE: action_Engage(); break;
             case DISENGAGE: action_Disengage(); break;
             default: REMOTELOG_W("Unknown target action %d", TargetAction); break;
         }
 
-        TargetAction = NONE;
+        TargetAction = Action::ACTNONE;
+        TargetActionSource = ActionSource::SRCNONE;
         delay(10);
     }
 }
@@ -184,9 +194,10 @@ void ActionHandler::action_Lock(bool useFeedback)
 
 
     Lock::SetSolenoid(false);
+    Time_DoorLocked = millis();
 }
 
-void ActionHandler::action_Unlock(bool useFeedback)
+void ActionHandler::action_Unlock(ActionSource src, bool useFeedback)
 {
     REMOTELOG_I("Action Unlock Triggered");
 
@@ -209,6 +220,26 @@ void ActionHandler::action_Unlock(bool useFeedback)
     Lock::SetSolenoid(false);
     delay(200);
     Lock::SetSolenoid(true);
+
+    ulong timeout = 0;
+
+    switch (src)
+    {
+    
+    case Button: timeout = DOOR_UNLOCK_TIMEOUT_BUTTON; break;
+
+    case Front: timeout = DOOR_UNLOCK_TIMEOUT_FRONT; break;
+    case Discord: timeout = DOOR_UNLOCK_TIMEOUT_DISCORD; break;
+    case Web: timeout = DOOR_UNLOCK_TIMEOUT_WEB; break;
+    case ActionSource::SRCNONE: timeout = DOOR_UNLOCK_TIMEOUT_DEFAULT; break;
+    
+    default: 
+    timeout = DOOR_UNLOCK_TIMEOUT_DEFAULT;
+    REMOTELOG_W("Default Door Unlock Timeout");
+    break;
+    }
+
+    UnlockTimeout = millis() + timeout;
 }
 
 void ActionHandler::action_Engage(bool useFeedback)

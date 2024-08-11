@@ -6,9 +6,27 @@
 
 #define DOOR_LOCK_TIMEOUT 5000
 
+#define DOOR_UNLOCK_TIMEOUT_BUTTON 5000
+#define DOOR_UNLOCK_TIMEOUT_FRONT 10000
+#define DOOR_UNLOCK_TIMEOUT_DISCORD 30000
+#define DOOR_UNLOCK_TIMEOUT_WEB 30000
+#define DOOR_UNLOCK_TIMEOUT_DEFAULT 5000
+
+
+#define ACTIONSOURCE_MAXVALUE 4
+enum ActionSource
+{
+    SRCNONE = 0,
+    Button,
+    Front,
+    Discord,
+    Web
+};
+
+#define ACTION_MAXVALUE 3
 enum Action
 {
-    NONE = -1,
+    ACTNONE = 0,
     UNLOCK,
     ENGAGE,
     DISENGAGE
@@ -36,7 +54,11 @@ class ActionHandler
     private:
 
     static Action TargetAction;
+    static ActionSource TargetActionSource;
+
     static ulong Time_DoorLocked;
+
+    static ulong UnlockTimeout;
 
     static DoorState CurrentState;
     
@@ -47,11 +69,11 @@ class ActionHandler
     static void Alarm();
 
     static void action_Lock(bool useFeedback = true);
-    static void action_Unlock(bool useFeedback = true);
+    static void action_Unlock(ActionSource src, bool useFeedback = true);
     static void action_Engage(bool useFeedback = true);
     static void action_Disengage(bool useFeedback = true);
 
-    static void ExecuteAction(Action act);
+    static void ExecuteAction(Action act, ActionSource src);
 
 
     static Melody melody_Unlock;
@@ -64,7 +86,7 @@ class ActionHandler
 
     public:
     static void Initialize();
-    static ActionRequestResult Unlock();
-    static ActionRequestResult Engage();
-    static ActionRequestResult Disengage();
+    static ActionRequestResult Unlock(ActionSource src);
+    static ActionRequestResult Engage(ActionSource src);
+    static ActionRequestResult Disengage(ActionSource src);
 };

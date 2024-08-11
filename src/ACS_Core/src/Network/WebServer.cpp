@@ -53,19 +53,36 @@ void WebServer::HandleAction(AsyncWebServerRequest *request)
 {
     if(!ValidateRequest(request)) return;
 
-    String action = request->arg("action");
+    int actionSource_int = request->arg("actionsource").toInt();
+    int action_int = request->arg("action").toInt();
+
+    if(action_int < 1 || action_int > ACTION_MAXVALUE)
+    {
+        REMOTELOG_W("Invlid Action: %d", action_int);
+        request->send(400, "text/plain", "Invalid Action");
+    }
+
+    if(actionSource_int < 1 || actionSource_int > ACTIONSOURCE_MAXVALUE)
+    {
+        REMOTELOG_W("Invlid Action Source: %d", actionSource_int);
+        request->send(400, "text/plain", "Invalid Action Source");
+    }
+
+    ActionSource src = (ActionSource)actionSource_int;
+    Action action = (Action)action_int;
 
     ActionRequestResult actionResult;
 
-    REMOTELOG_D("Received Action HTTP Request (Action: %s)", action.c_str());
+    REMOTELOG_D("Received Action HTTP Request (Action: %d)", action_int);
 
-    if(action == "unlock") actionResult = ActionHandler::Unlock();
-    else if(action == "disengage") actionResult = ActionHandler::Disengage();
-    else if(action == "engage") actionResult = ActionHandler::Engage();
-    else
+    switch (action)
     {
-        REMOTELOG_W("Invalid action: %s", action.c_str());
-        request->send(400, "text/plain", "Invalid action");
+    case Action::UNLOCK: actionResult = ActionHandler::Unlock(src); break;
+    case Action::DISENGAGE: actionResult = ActionHandler::Disengage(src); break;
+    case Action::ENGAGE: actionResult = ActionHandler::Engage(src); break;
+    
+    default:
+        REMOTELOG_E("Invlid action reached switch: %d", action_int);
         return;
     }
 

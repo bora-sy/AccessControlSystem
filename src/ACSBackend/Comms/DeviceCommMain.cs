@@ -62,18 +62,12 @@ namespace ACSBackend.Comms
                 }
             }
 
-            public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action)
+            public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action, DeviceActionSource source)
             {
                 try
                 {
-                    string path = action switch
-                    {
-                        DeviceAction.Unlock => "/action?action=unlock",
-                        DeviceAction.Engage => "/action?action=engage",
-                        DeviceAction.Disengage => "/action?action=disengage",
-                        _ => throw new NotImplementedException()
-                    };
-
+                    string path = $"/action?action={(int)action}&actionsource={(int)source}";
+                   
                     return await POST(path);
                 }
                 catch (Exception)
@@ -83,15 +77,25 @@ namespace ACSBackend.Comms
             }
         }
 
-        
+
 
 
 
         public enum DeviceAction
         {
+            NONE = 0,
             Unlock,
             Engage,
             Disengage
+        }
+
+        public enum DeviceActionSource
+        {
+            NONE = 0,
+            Button,
+            Front,
+            Discord,
+            Web
         }
 
         public enum ActionRequestResult

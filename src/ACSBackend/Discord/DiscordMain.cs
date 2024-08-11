@@ -59,7 +59,7 @@ namespace BKDijitalYoklamaBackend.Discord
 
             if (deviceAction == (DeviceAction)(-1)) return;
 
-            var res = await Core.ExecuteAction(deviceAction);
+            var res = await Core.ExecuteAction(deviceAction, DeviceActionSource.Discord);
 
             DiscordEmbedBuilder embed = res switch
             {
