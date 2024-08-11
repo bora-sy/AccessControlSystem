@@ -86,6 +86,8 @@ ActionRequestResult ActionHandler::Disengage(ActionSource src)
 
 ActionRequestResult ActionHandler::AbortAlarm(ActionSource src)
 {
+    if(!AlarmOn) return ALARM_NOT_ACTIVE;
+    
     ExecuteAction(ABORTALARM, src);
     return SUCCESS;
 }
@@ -185,6 +187,7 @@ void ActionHandler::Alarm()
     {
         if(TargetAction == ABORTALARM)
         {
+            TargetAction = ACTNONE;
             REMOTELOG_I("Alarm Aborted");
             break;
         }

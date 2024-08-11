@@ -36,6 +36,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
         [HttpPost("logalarm")]
         public IActionResult LogAlarm(bool prealarm, bool status)
         {
+            LogAlarm(prealarm, status);
 
             return Ok();
         }

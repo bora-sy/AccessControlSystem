@@ -55,7 +55,8 @@ namespace ACSBackend.Comms.WebServer.Controllers
             if ((deviceAction == DeviceAction.Unlock) && !user.HasPermission(Permission.ACTION_UNLOCK)) return Unauthorized("No Permission (1)");
             if ((deviceAction == DeviceAction.Engage || deviceAction == DeviceAction.Disengage) && !user.HasPermission(Permission.ACTION_DISENGAGE)) return Unauthorized("No Permission (2)");
 
-            var res = await Core.ExecuteAction(deviceAction, DeviceActionSource.Web);
+            var res = await Core.ExecuteAction(deviceAction, DeviceActionSource.Web, user);
+
 
             return res switch
             {

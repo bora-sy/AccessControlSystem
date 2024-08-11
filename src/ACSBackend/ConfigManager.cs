@@ -16,6 +16,7 @@ namespace ACSBackend
         DISCORD_TOKEN,
         REMOTE_LOGGING_PORT,
         REMOTE_LOGGING_IP,
+        DISCORD_LOGS_CHANNEL,
     }
 
     public static class ConfigManager

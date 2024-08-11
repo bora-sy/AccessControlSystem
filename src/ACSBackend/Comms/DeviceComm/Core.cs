@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using ACSBackend.Database.Models;
+using ACSBackend.Discord.Integrations;
+using System.Net;
 
 namespace ACSBackend.Comms.DeviceComm
 {
@@ -6,13 +8,15 @@ namespace ACSBackend.Comms.DeviceComm
     {
         public static class Core
         {
-            public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action, DeviceActionSource source)
+            public static async Task<ActionRequestResult> ExecuteAction(DeviceAction action, DeviceActionSource source, User? user)
             {
                 try
                 {
                     string path = $"/action?action={(int)action}&actionsource={(int)source}";
+                    var res = (await RequestSender.POST(path, DeviceType.CORE)).ToActionRequestResult() ?? ActionRequestResult.ERROR;
+                    await LoggerIntegration.LogActionAsync(action, res, source, user);
 
-                    return (await RequestSender.POST(path, DeviceType.CORE)).ToActionRequestResult() ?? ActionRequestResult.ERROR;
+                    return res;
                 }
                 catch (Exception)
                 {
