@@ -1,7 +1,6 @@
 #include "IO/CardReader.h"
 #include "IO/Keypad.h"
 #include "IO/LCD.h"
-#include "CoreComm.h"
 
 //#define IGNORE_CORE_PING
 
@@ -21,11 +20,11 @@ void setup()
 
   LCD::PrintCenter("Starting...");
 
-  CoreComm::Initialize();
+  //CoreComm::Initialize();
   Keypad::Initialize();
   CardReader::Initialize();
 
-  bool res = CoreComm::Ping(1000);
+  bool res = true;//CoreComm::Ping(1000);
 
   #ifndef IGNORE_CORE_PING
   if(!res)
@@ -54,21 +53,13 @@ void loop()
 
 inline void HandleFeedback()
 {
-  if(CoreComm::feedbackEndMS > millis())
+  if(true/*CoreComm::feedbackEndMS > millis()*/)
   {
-    LCD::PrintCenter(CoreComm::feedback);
+    LCD::PrintCenter(""/*CoreComm::feedback*/);
 
-    while (CoreComm::feedbackEndMS > millis())
+    while (true/*CoreComm::feedbackEndMS > millis()*/)
     {
       delay(5);
-      /*
-      char key = Keypad::GetKey();
-      if(key != 0)
-      {
-        CoreComm::feedbackEndMS = 0;
-        return;
-      }
-      */
     }
     
   }
@@ -77,7 +68,7 @@ inline void HandleFeedback()
 inline void HandleConfigMenu()
 {
 
-  if(CoreComm::configMenuAuth == 0) return;
+  if(true/*CoreComm::configMenuAuth == 0*/) return;
 
   LCD::PrintCenterRow("Enter Backend IP", 0);
   char ipStr[16];
@@ -120,16 +111,16 @@ inline void HandleConfigMenu()
 
       uint8_t ip_formatted[] = {ip[0], ip[1], ip[2], ip[3]};
 
-      CoreComm::Config_SetIP(ip_formatted);
+      //CoreComm::Config_SetIP(ip_formatted);
       LCD::PrintCenter("IP Submitted");
       delay(200);
 
-      CoreComm::configMenuAuth = 0;
+      //CoreComm::configMenuAuth = 0;
       return;
     }
     else if(key == '*') // Cancel
     {
-      CoreComm::configMenuAuth = 0;
+      //CoreComm::configMenuAuth = 0;
       return;
     }
     
@@ -143,7 +134,7 @@ inline void HandleCardEntry()
   Card card = CardReader::ReadCard();
   if(card.IsEmpty()) return;
   
-  CoreComm::CardEntry(card.UID);
+  //CoreComm::CardEntry(card.UID);
   LCD::PrintCenter("Card Read");
   delay(200);
 }
@@ -172,7 +163,7 @@ inline void HandlePasswordEntry()
     LCD::PrintCenterRow("Password", 0);
     LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
     lastPasswordKeyInput = millis();
-    CoreComm::PlayTone(1000, 100); // TODO: Set tone
+    //CoreComm::PlayTone(1000, 100); // TODO: Set tone
   }
   else return;
 
@@ -197,7 +188,7 @@ inline void HandlePasswordEntry()
       nextIndex--;
       LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
       lastPasswordKeyInput = millis();
-      CoreComm::PlayTone(800, 100); // TODO: Set tone
+      //CoreComm::PlayTone(800, 100); // TODO: Set tone
       continue;
     }
     else if (key == 'D') // Toggle Mask
@@ -210,7 +201,7 @@ inline void HandlePasswordEntry()
     else if (key == '#') // Submit
     {
       if(nextIndex == 0) return;
-      CoreComm::PasswordEntry(atoll(password));
+      //CoreComm::PasswordEntry(atoll(password));
       LCD::PrintCenter("Password Submitted");
       delay(200);
       return;
@@ -224,7 +215,7 @@ inline void HandlePasswordEntry()
     maskedPassword[nextIndex] = '*';
     nextIndex++;
     lastPasswordKeyInput = millis();
-    CoreComm::PlayTone(1000, 100); // TODO: Set tone
+    //CoreComm::PlayTone(1000, 100); // TODO: Set tone
     Serial.println(password);
 
     LCD::PrintCenterRow(passwordMasked ? maskedPassword : password, 1);
@@ -238,24 +229,3 @@ inline void HandlePasswordEntry()
   char passwordBuf[16];
   memset(passwordBuf, 0, 16);
 }
-
-/*
-void setup()
-{
-  Serial.begin(921600);
-  Serial2.begin(115200);
-}
-
-void loop()
-{
-  if(Serial.available())
-  {
-    Serial2.write(Serial.read());
-  }
-
-  if(Serial2.available())
-  {
-    Serial.write(Serial2.read());
-  }
-}
-*/
