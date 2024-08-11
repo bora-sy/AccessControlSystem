@@ -1,5 +1,4 @@
-
-using ACSBackend.Comms;
+using ACSBackend.Comms.DeviceComm;
 using ACSBackend.Comms.RemoteLogging;
 using ACSBackend.Database;
 using BKDijitalYoklamaBackend.Discord;
@@ -84,7 +83,8 @@ namespace ACSBackend
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"ERROR: {ex.Message}");
+                Console.ReadLine();
             }
         }
     }

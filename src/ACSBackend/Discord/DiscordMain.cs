@@ -4,8 +4,7 @@ using DSharpPlus;
 using System.Reflection;
 using ACSBackend;
 using DSharpPlus.Interactivity.Extensions;
-using ACSBackend.Comms;
-using static ACSBackend.Comms.DeviceCommMain;
+using static ACSBackend.Comms.DeviceComm.DeviceCommMain;
 using ACSBackend.Discord.Extensions;
 using DSharpPlus.Entities;
 

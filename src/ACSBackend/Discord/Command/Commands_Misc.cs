@@ -5,10 +5,11 @@ using DSharpPlus.Interactivity;
 using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.Entities;
 using ACSBackend.Discord.DiscordUtils;
-using ACSBackend.Comms;
-using static ACSBackend.Comms.DeviceCommMain;
+using static ACSBackend.Comms.DeviceComm.DeviceCommMain;
 using DSharpPlus;
 using DSharpPlus.SlashCommands.Attributes;
+using ACSBackend.Comms.WebServer.Controllers;
+using ACSBackend.Comms.DeviceComm;
 
 namespace ACSBackend.Discord.Commands
 {
@@ -61,5 +62,17 @@ namespace ACSBackend.Discord.Commands
             }
 
         }
+
+        [SlashCommand("pingcore", "Pings the Core Device")]
+        public async Task PingCore(InteractionContext ctx)
+        {
+            await ctx.DeferAsync();
+
+            bool suc = await DeviceCommMain.Core.PingDevice();
+
+            if (suc) await ctx.EditResponseAsync(DiscordColor.SpringGreen, "Success", "Successfully pinged the Core Device");
+            else await ctx.EditResponseAsync(DiscordColor.Red, "Error", "Something went wrong while pinging the Core Device");
+        }
+
     }
 }

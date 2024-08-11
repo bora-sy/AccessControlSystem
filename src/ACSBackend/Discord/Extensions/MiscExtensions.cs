@@ -1,7 +1,6 @@
 ﻿using DSharpPlus.Entities;
 using System.Runtime.CompilerServices;
-using ACSBackend.Comms;
-using static ACSBackend.Comms.DeviceCommMain;
+using static ACSBackend.Comms.DeviceComm.DeviceCommMain;
 
 namespace ACSBackend.Discord.Extensions
 {
