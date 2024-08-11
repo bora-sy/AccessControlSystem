@@ -2,15 +2,17 @@
 
 AsyncUDP* RemoteLogging::udp;
 bool RemoteLogging::Initialized = false;
+uint8_t RemoteLogging::ConnectedIP[4] = {0,0,0,0};
 
 bool RemoteLogging::Initialize()
 {
     ESP_LOGI("RemoteLogging", "Initializing RemoteLogging");
     udp = new AsyncUDP();
 
-    bool udpsuc = udp->connect(IPAddress(Config::webConfig.ServerIP), 1256);
+    bool udpsuc = udp->connect(IPAddress(Config::webConfig.ServerIP), UDPLOGGINGPORT);
+
+    memcpy(ConnectedIP, Config::webConfig.ServerIP, 4);
     
-    // TODO: Change the target UDP Server when the IP address is changed
 
     if(udpsuc)
     {
@@ -24,6 +26,8 @@ bool RemoteLogging::Initialize()
 
 void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineNum,  esp_log_level_t level, ...) {
     if(!Initialized) return;
+    ValidateUDPConnection();
+
     va_list args;
     va_start(args, level);
 
@@ -70,4 +74,14 @@ String RemoteLogging::FormatString(const char* format, ...) {
     va_end(args);
 
     return String(buffer);
+}
+
+void RemoteLogging::ValidateUDPConnection()
+{
+    if(memcmp(ConnectedIP, Config::webConfig.ServerIP, 4) == 0 && udp->connected()) return;
+
+    udp->close();
+
+    udp->connect(IPAddress(Config::webConfig.ServerIP), UDPLOGGINGPORT);
+    memcpy(ConnectedIP, Config::webConfig.ServerIP, 4);
 }
