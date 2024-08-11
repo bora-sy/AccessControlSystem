@@ -4,11 +4,49 @@ String WebClient::commKey;
 
 bool WebClient::Initialize()
 {
-    REMOTELOG_I("Initializing WebClient");
+    Melody pingingMelody;
+    Melody pingSucMelody;
+    Melody pingFailedMelody;
+    Melody failedMelody;
 
-    WebConfig config = Config::webConfig;
 
-    commKey = config.CommKey;
+    pingingMelody.AddNote(600, 100);
+    pingingMelody.AddRest(500);
+    pingingMelody.AddNote(1200, 100);
+
+    pingSucMelody.AddNote(600, 100);
+    pingSucMelody.AddRest(50);
+    pingSucMelody.AddNote(1200, 100);
+    pingSucMelody.AddRest(200);
+    pingSucMelody.AddNote(1200, 100);
+    
+    failedMelody.AddNote(600, 200);
+    failedMelody.AddRest(100);
+    failedMelody.AddNote(500, 200);
+    failedMelody.AddRest(100);
+    failedMelody.AddNote(400, 200);
+
+    pingFailedMelody.AddNote(1000, 100);
+    pingFailedMelody.AddRest(50);
+    pingFailedMelody.AddNote(500, 100);
+
+    REMOTELOG_I("TESTING MELODIES...");
+
+    delay(5000);
+    REMOTELOG_I("Pinging Melody");
+    MelodyPlayer::PlayMelody(pingingMelody);
+    
+    delay(5000);
+    REMOTELOG_I("PingFailedMelody");
+    MelodyPlayer::PlayMelody(pingFailedMelody);
+
+    delay(5000);
+    REMOTELOG_I("PingSucMelody");
+    MelodyPlayer::PlayMelody(pingSucMelody);
+    
+    delay(5000);
+    REMOTELOG_I("FailedMelody");
+    MelodyPlayer::PlayMelody(failedMelody);
     
     bool pingRes = PingServer();
 

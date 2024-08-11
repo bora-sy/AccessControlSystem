@@ -2,6 +2,7 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "IO/MelodyPlayer.h"
 #include "RemoteLogging.h"
 
 #define REQUEST_TIMEOUT 3000
