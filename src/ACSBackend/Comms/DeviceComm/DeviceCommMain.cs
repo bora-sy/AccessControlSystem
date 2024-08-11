@@ -10,9 +10,6 @@ namespace ACSBackend.Comms.DeviceComm
 {
     public static partial class DeviceCommMain
     {
-        private const string BACKENDUSERAGENT = "ACS_Backend";
-
-        const int DEVICE_PORT = 80;
 
         private static AppDBContext DB = null!;
 
@@ -25,9 +22,6 @@ namespace ACSBackend.Comms.DeviceComm
 
             CoreCommKey = ConfigManager.GetConfig(ConfigEnum.COREDEVICE_COMMKEY)!;
             FrontCommKey = ConfigManager.GetConfig(ConfigEnum.FRONTDEVICE_COMMKEY)!;
-
-            Permission perms = 0;
-            perms.AddPermissions(Permission.USE_ACTIONS, Permission.ACTION_UNLOCK, Permission.ACTION_DISENGAGE, Permission.MANAGE_PERMS);
         }
 
 
