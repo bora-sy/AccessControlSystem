@@ -54,7 +54,7 @@ void RemoteLogging::Log(const char* format, const char* filename, uint32_t lineN
 
     udp->write(buf, bufLength);
 
-    if(level <= 4)
+    //if(level <= 4)
     Serial.printf("LOG: %s\n", text);
     
 

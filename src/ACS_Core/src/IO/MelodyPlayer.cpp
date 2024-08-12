@@ -70,6 +70,7 @@ void MelodyPlayer::t_melodyplayer(void *args)
             {
                 ledcWriteTone(BUZZER_CHANNEL, 0);
                 REMOTELOG_W("Melodies conflicted. Aborting previous melody.");
+                delay(100);
                 break;
             }
 

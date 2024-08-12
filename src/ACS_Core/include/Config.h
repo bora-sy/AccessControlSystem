@@ -2,7 +2,7 @@
 #include "DataSaving.h"
 #include "IO/MelodyPlayer.h"
 
-#define CONFIGPATH_WIFI "/wifi.cfg"
+#define CONFIGPATH_WIFI "/wifi2.cfg"
 #define CONFIGPATH_OTA  "/ota.cfg"
 #define CONFIGPATH_WEB  "/web.cfg"
 

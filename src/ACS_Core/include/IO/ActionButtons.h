@@ -31,6 +31,7 @@ class ActionButtons
     static ulong disengageLastChange;
 
     static void t_LedHandler(void* args);
+    static void t_ButtonHandler(void* args);
 
 
     static LEDState state;

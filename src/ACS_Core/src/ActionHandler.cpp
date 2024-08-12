@@ -60,6 +60,11 @@ void ActionHandler::InitializeMelodies()
     melody_Disengage.AddNote(750, 150);
 }
 
+DoorState ActionHandler::GetCurrentState()
+{
+    return CurrentState;
+}
+
 
 void ActionHandler::ExecuteAction(Action act, ActionSource src)
 {

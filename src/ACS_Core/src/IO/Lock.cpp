@@ -1,5 +1,8 @@
 #include "IO/Lock.h"
 
+bool Lock::lastState = false;
+ulong Lock::lastChange = 0;
+
 void Lock::Initialize()
 {
     pinMode(PIN_SOLENOID, OUTPUT);
@@ -19,8 +22,6 @@ bool Lock::GetSolenoid()
     return digitalRead(PIN_SOLENOID);
 }
 
-bool lastState = false;
-ulong lastChange = 0;
 
 bool Lock::IsDoorClosed()
 {

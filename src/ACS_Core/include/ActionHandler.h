@@ -92,6 +92,7 @@ class ActionHandler
 
     public:
     static void Initialize();
+    static DoorState GetCurrentState();
     static ActionRequestResult Unlock(ActionSource src);
     static ActionRequestResult Engage(ActionSource src);
     static ActionRequestResult Disengage(ActionSource src);

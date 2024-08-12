@@ -6,6 +6,9 @@
 class Lock
 {
     private:
+    static bool lastState;
+    static ulong lastChange;
+
 
     public:
     static void Initialize();

@@ -3,13 +3,14 @@
 
 void ActionButtons::Initialize()
 {
-    pinMode(PIN_BTN_UNLOCK, INPUT_PULLUP);
-    pinMode(PIN_BTN_DISENG, INPUT_PULLUP);
+    pinMode(PIN_BTN_UNLOCK, INPUT_PULLDOWN);
+    pinMode(PIN_BTN_DISENG, INPUT_PULLDOWN);
 
     pinMode(PIN_BTN_UNLOCK_LED, OUTPUT);
     pinMode(PIN_BTN_DISENG_LED, OUTPUT);
 
     xTaskCreate(t_LedHandler, "LedHandler", 4096, NULL, 1, NULL);
+    xTaskCreate(t_ButtonHandler, "ButtonHandler", 4096, NULL, 1, NULL);
 
     REMOTELOG_I("ActionButtons Initialized");
 }
@@ -21,9 +22,10 @@ ulong ActionButtons::unlockLastChange = 0;
 bool ActionButtons::ShouldUnlock()
 {
     bool read = digitalRead(PIN_BTN_UNLOCK);
-    if(unlockLastState == read) return read;
-    if(millis() - unlockLastChange < 100) return unlockLastState;
+    if(read == unlockLastState) return false;
+    if(millis() - unlockLastChange < 100) return false;
     unlockLastState = read;
+    unlockLastChange = millis();
     return read;
 }
 
@@ -34,9 +36,10 @@ ulong ActionButtons::disengageLastChange = 0;
 bool ActionButtons::ShouldEngageDisengage()
 {
     bool read = digitalRead(PIN_BTN_DISENG);
-    if(disengageLastState == read) return read;
-    if(millis() - disengageLastChange < 100) return disengageLastState;
+    if(read == disengageLastState) return false;
+    if(millis() - disengageLastChange < 100) return false;
     disengageLastState = read;
+    disengageLastChange = millis();
     return read;
 }
 
@@ -61,16 +64,16 @@ void ActionButtons::t_LedHandler(void* args)
         {
             case LEDState::Initializing:
                 SetLED(NONE);
-                delay(500);
+                delay(800);
                 SetLED((LED)(LEDUnlock | LEDDisengage));
-                delay(500);
+                delay(800);
                 break;
 
             case LEDState::Unlocked:
                 SetLED(LEDUnlock);
-                delay(250);
+                delay(150);
                 SetLED(NONE);
-                delay(250);
+                delay(150);
                 break;
                 
             case LEDState::Disengaged:
@@ -81,5 +84,29 @@ void ActionButtons::t_LedHandler(void* args)
                 SetLED(NONE);
                 break;
         }
+    }
+}
+
+void ActionButtons::t_ButtonHandler(void* args)
+{
+    for(;;)
+    {
+        if(ShouldUnlock())
+        {
+            ActionHandler::Unlock(ActionSource::Button);
+        }
+        if(ShouldEngageDisengage())
+        {
+            if(ActionHandler::GetCurrentState() == DoorState::DISENGAGED)
+            {
+                ActionHandler::Engage(ActionSource::Button);
+            }
+            else
+            {
+                ActionHandler::Disengage(ActionSource::Button);
+            }
+        }
+
+        delay(200);
     }
 }
