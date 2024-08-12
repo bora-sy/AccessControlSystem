@@ -57,7 +57,8 @@ namespace ACSBackend.Comms.DeviceComm
             SUCCESS = 0,
             ALREADY_UNLOCKED,
             ALREADY_ENGAGED,
-            ALREADY_DISENGAGED
+            ALREADY_DISENGAGED,
+            ALARM_NOT_ACTIVE
         }
 
     }

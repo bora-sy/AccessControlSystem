@@ -59,7 +59,7 @@ namespace ACSBackend.Discord.Integrations
                 $"Action: {action}\n" +
                 $"Result: {result}\n" +
                 $"Source: {source}\n" +
-                $"User: {(user == null ? "null" : $"@<{user.DiscordUserID}> - {user.NameSurname}")}"
+                $"User: {(user == null ? "null" : $"<@{user.DiscordUserID}> - {user.NameSurname}")}"
             };
 
             await channel.SendMessageAsync(embed);

@@ -131,6 +131,11 @@ namespace BKDijitalYoklamaBackend.Discord
                     .WithTitle("Error")
                     .WithDescription("Door is already unlocked"),
 
+                ActionRequestResult.ALARM_NOT_ACTIVE => new DiscordEmbedBuilder()
+                    .WithColor(DiscordColor.Orange)
+                    .WithTitle("Error")
+                    .WithDescription("Alarm is not active"),
+
                 _ => new DiscordEmbedBuilder()
                     .WithColor(DiscordColor.DarkRed)
                     .WithDescription("Unknown Result")

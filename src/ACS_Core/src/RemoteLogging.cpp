@@ -78,10 +78,19 @@ String RemoteLogging::FormatString(const char* format, ...) {
 
 void RemoteLogging::ValidateUDPConnection()
 {
-    if(memcmp(ConnectedIP, Config::webConfig.ServerIP, 4) == 0 && udp->connected()) return;
+    if(memcmp(ConnectedIP, Config::webConfig.ServerIP, 4) == 0 && udp->connected())
+    {
+        Serial.println("UDP connected & IP matches");
+        return;
+    }
 
     udp->close();
+    Serial.println("UDP closed");
 
     udp->connect(IPAddress(Config::webConfig.ServerIP), UDPLOGGINGPORT);
+    Serial.println("UDP connected");
+
     memcpy(ConnectedIP, Config::webConfig.ServerIP, 4);
+    Serial.println("IP copied");
+
 }

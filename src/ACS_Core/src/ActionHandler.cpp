@@ -86,9 +86,14 @@ ActionRequestResult ActionHandler::Disengage(ActionSource src)
 
 ActionRequestResult ActionHandler::AbortAlarm(ActionSource src)
 {
-    if(!AlarmOn) return ALARM_NOT_ACTIVE;
+    if(!AlarmOn)
+    {
+        REMOTELOG_D("Abort Alarm requested but alarm is not active");
+        return ALARM_NOT_ACTIVE;
+    }
     
     ExecuteAction(ABORTALARM, src);
+    REMOTELOG_D("Target Action set to: %d", (int)TargetAction);
     return SUCCESS;
 }
 
@@ -122,7 +127,7 @@ void ActionHandler::t_DoorHandler(void *args)
             CurrentState = UNLOCKED;
         }
         
-        if(CurrentState == UNLOCKED_WAITINGDOOROPEN && millis() < UnlockTimeout && Lock::IsDoorClosed())
+        if(CurrentState == UNLOCKED_WAITINGDOOROPEN && millis() > UnlockTimeout && Lock::IsDoorClosed())
         {
             REMOTELOG_D("Door unlock timeout reached. Locking...");
             action_Lock();
@@ -185,17 +190,25 @@ void ActionHandler::Alarm()
 
     for(;;)
     {
+        REMOTELOG_V("Target Action: %d", TargetAction);
+
         if(TargetAction == ABORTALARM)
         {
             TargetAction = ACTNONE;
             REMOTELOG_I("Alarm Aborted");
             break;
         }
+
+        delay(100);
     }
 
     MelodyPlayer::SetAlarm(false);
     WebClient::LogAlarm(false, false);
     AlarmOn = false;
+
+    delay(100);
+
+    action_Unlock(ActionSource::SRCNONE);
 }
 
 void ActionHandler::action_Lock(bool useFeedback)

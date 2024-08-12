@@ -130,6 +130,8 @@ bool WebClient::PingServer()
 
 void WebClient::LogAlarm(bool preAlarm, bool alarmStatus)
 {
+    return;
+    
     bool* arr = new bool[2];
     arr[0] = preAlarm;
     arr[1] = alarmStatus;
@@ -138,7 +140,7 @@ void WebClient::LogAlarm(bool preAlarm, bool alarmStatus)
     {
         bool* vals = (bool*)arg;
 
-        String url = RemoteLogging::FormatString("/coredevice/logalarm?prealarm=%d&status=%d", vals[0], vals[1]);
+        String url = RemoteLogging::FormatString("/coredevice/logalarm?prealarm=%d&status=%d", (int)vals[0], (int)vals[1]);
         delete[] vals;
         
         WebResponse response = SendRequest(url, "POST");
