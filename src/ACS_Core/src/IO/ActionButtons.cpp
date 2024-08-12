@@ -55,5 +55,31 @@ LEDState ActionButtons::state = LEDState::Initializing;
 
 void ActionButtons::t_LedHandler(void* args)
 {
-    // TODO: Implement LED Handler
+    for(;;)
+    {
+        switch(state)
+        {
+            case LEDState::Initializing:
+                SetLED(NONE);
+                delay(500);
+                SetLED((LED)(LEDUnlock | LEDDisengage));
+                delay(500);
+                break;
+
+            case LEDState::Unlocked:
+                SetLED(LEDUnlock);
+                delay(250);
+                SetLED(NONE);
+                delay(250);
+                break;
+                
+            case LEDState::Disengaged:
+                SetLED(LEDDisengage);
+                break;
+
+            case LEDState::Locked:
+                SetLED(NONE);
+                break;
+        }
+    }
 }
