@@ -4,6 +4,7 @@
 #include "IO/MelodyPlayer.h"
 #include "RemoteLogging.h"
 #include "Network/WebClient.h"
+#include "IO/ActionButtons.h"
 
 #define DOOR_LOCK_TIMEOUT 5000
 

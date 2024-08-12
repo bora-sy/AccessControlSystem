@@ -22,7 +22,11 @@ void ActionHandler::Initialize()
 
     bool doorLocked = Lock::IsDoorClosed();
 
-    if(doorLocked) CurrentState = LOCKED;
+    if(doorLocked)
+    {
+        CurrentState = LOCKED;
+        ActionButtons::SetLEDState(LEDState::Locked);
+    }
     else
     {
         action_Unlock(ActionSource::SRCNONE);
@@ -220,7 +224,8 @@ void ActionHandler::action_Lock(bool useFeedback)
         REMOTELOG_W("Door is already locked or not closed. Aborting lock action.");
         return;
     }
-    
+
+    ActionButtons::SetLEDState(LEDState::Locked);
     CurrentState = LOCKED;
 
     if(useFeedback)
@@ -243,6 +248,7 @@ void ActionHandler::action_Unlock(ActionSource src, bool useFeedback)
         return;
     }
 
+    ActionButtons::SetLEDState(LEDState::Unlocked);
     CurrentState = UNLOCKED_WAITINGDOOROPEN;
 
     if(useFeedback)
@@ -294,6 +300,7 @@ void ActionHandler::action_Engage(bool useFeedback)
     }
     else
     {
+        ActionButtons::SetLEDState(LEDState::Unlocked);
         CurrentState = UNLOCKED;
     }
 
@@ -313,6 +320,7 @@ void ActionHandler::action_Disengage(bool useFeedback)
         return;
     }
 
+    ActionButtons::SetLEDState(LEDState::Disengaged);
     CurrentState = DISENGAGED;
     
     Lock::SetSolenoid(true);

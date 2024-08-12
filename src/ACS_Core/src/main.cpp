@@ -9,6 +9,7 @@
 #include "Network/WebServer.h"
 #include "RemoteLogging.h"
 #include "Network/WebClient.h"
+#include "IO/ActionButtons.h"
 
 void InitCritical(bool (*initFunc)(), const char* loadingText, const char* errorText)
 {
@@ -41,6 +42,7 @@ void setup()
 { 
   Serial.begin(921600);
   MelodyPlayer::Initialize();
+  ActionButtons::Initialize();
 
   delay(350);
 
