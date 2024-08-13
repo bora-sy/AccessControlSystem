@@ -33,8 +33,11 @@ class ActionButtons
     static void t_LedHandler(void* args);
     static void t_ButtonHandler(void* args);
 
+    static void delaySinceStateChange(ulong val);
 
-    static LEDState state;
+
+    static LEDState ledState;
+    static ulong lastLedStateChange;
 
     static void SetLED(LED led);
 

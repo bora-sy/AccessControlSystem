@@ -51,16 +51,22 @@ void ActionButtons::SetLED(LED led)
 
 void ActionButtons::SetLEDState(LEDState newState)
 {
-    state = newState;
+    ledState = newState;
+    lastLedStateChange = millis();
 }
 
-LEDState ActionButtons::state = LEDState::Initializing;
+
+LEDState ActionButtons::ledState = LEDState::Initializing;
+ulong ActionButtons::lastLedStateChange = 0;
 
 void ActionButtons::t_LedHandler(void* args)
 {
+    LEDState lastState = LEDState::Initializing;
+
     for(;;)
     {
-        switch(state)
+        LEDState currState = ledState;
+        switch(currState)
         {
             case LEDState::Initializing:
                 SetLED(NONE);
@@ -81,9 +87,18 @@ void ActionButtons::t_LedHandler(void* args)
                 break;
 
             case LEDState::Locked:
+
+                if(lastState == LEDState::Unlocked)
+                {
+                    SetLED(LEDUnlock);
+                    delaySinceStateChange(1000);
+                }
+
                 SetLED(NONE);
                 break;
         }
+
+        lastState = currState;
     }
 }
 
@@ -109,4 +124,14 @@ void ActionButtons::t_ButtonHandler(void* args)
 
         delay(200);
     }
+}
+
+
+void ActionButtons::delaySinceStateChange(ulong val)
+{
+    long actualDelay = val - (millis() - lastLedStateChange);
+    REMOTELOG_V("Delaying %d", actualDelay);
+    actualDelay = actualDelay < 0 ? 0 : actualDelay; // Clamp
+
+    delay(actualDelay);
 }
