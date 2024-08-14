@@ -97,4 +97,5 @@ class ActionHandler
     static ActionRequestResult Engage(ActionSource src);
     static ActionRequestResult Disengage(ActionSource src);
     static ActionRequestResult AbortAlarm(ActionSource src);
+    static bool IsAlarmOn();
 };

@@ -50,8 +50,6 @@ bool ActionButtons::ShouldEngageDisengage()
 
 void ActionButtons::SetLED(LED led)
 {
-    REMOTELOG_I("Received: %d", led);
-
     digitalWrite(PIN_BTN_UNLOCK_LED, (led & LEDUnlock) == LEDUnlock);
     digitalWrite(PIN_BTN_DISENG_LED, (led & LEDDisengage) == LEDDisengage);
 }
@@ -103,6 +101,13 @@ void ActionButtons::t_LedHandler(void* args)
 
                 SetLED(NONE);
                 break;
+
+            case LEDState::Alarm:
+                SetLED((LED)(LEDUnlock | LEDDisengage));
+                delay(100);
+                SetLED(NONE);
+                delay(100);
+                break;
         }
 
         lastState = currState;
@@ -113,6 +118,32 @@ void ActionButtons::t_ButtonHandler(void* args)
 {
     for(;;)
     {
+        if(ActionHandler::IsAlarmOn())
+        {
+            REMOTELOG_V("Alarm ON");
+            bool unlockState = digitalRead(PIN_BTN_UNLOCK);
+            bool disengageState = digitalRead(PIN_BTN_DISENG);
+            REMOTELOG_D("Unlock: %d, Disengage: %d", unlockState, disengageState);
+            if(unlockState && disengageState)
+            {
+                SetLED((LED)(LEDUnlock | LEDDisengage));
+                REMOTELOG_D("LEDS ON");
+                delay(1000);
+                if(!digitalRead(PIN_BTN_UNLOCK) || !digitalRead(PIN_BTN_DISENG))
+                {
+                    REMOTELOG_D("One of the buttons is not pressed");
+                    continue;
+                }
+
+
+
+                ButtonAlarmAbortMode();
+            }
+
+
+            continue;
+        }
+
         if(ShouldUnlock())
         {
             ActionHandler::Unlock(ActionSource::Button);
@@ -141,4 +172,43 @@ void ActionButtons::delaySinceStateChange(ulong val)
     actualDelay = actualDelay < 0 ? 0 : actualDelay; // Clamp
 
     delay(actualDelay);
+}
+
+void ActionButtons::ButtonAlarmAbortMode()
+{
+    uint8_t requiredSequence[] = {0,0,1,1,0,0,1,1};
+    uint8_t sequence[8];
+    uint8_t sequenceIndex = 0;
+
+    SetLED(NONE);
+
+    for(;;)
+    {
+        if(!ActionHandler::IsAlarmOn()) return;
+
+        if(ShouldUnlock())
+        {
+            sequence[sequenceIndex++] = 0;
+            SetLED(LEDUnlock);
+            delay(50);
+            SetLED(NONE);
+        }
+        else if(ShouldEngageDisengage())
+        {
+            sequence[sequenceIndex++] = 1;
+            SetLED(LEDDisengage);
+            delay(50);
+            SetLED(NONE);
+        }
+
+        if(sequenceIndex == 8)
+        {
+            if(memcmp(sequence, requiredSequence, 8) == 0) ActionHandler::AbortAlarm(ActionSource::Button);
+            
+            return;
+        }
+
+        if(ActionHandler::IsAlarmOn()) delay(50);
+        SetLEDState(LEDState::Alarm);
+    }
 }

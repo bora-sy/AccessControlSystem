@@ -191,10 +191,16 @@ void ActionHandler::PreAlarm()
     }
 }
 
+bool ActionHandler::IsAlarmOn()
+{
+    return AlarmOn;
+}
+
 void ActionHandler::Alarm()
 {
     REMOTELOG_D("ALARM MODE");
     AlarmOn = true;
+    ActionButtons::SetLEDState(LEDState::Alarm);
     WebClient::LogAlarm(false, true);
 
     for(;;)

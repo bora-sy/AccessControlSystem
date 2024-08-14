@@ -11,6 +11,7 @@ enum LEDState
     Locked,
     Unlocked,
     Disengaged,
+    Alarm
 };
 
 enum LED : int
@@ -32,6 +33,8 @@ class ActionButtons
 
     static void t_LedHandler(void* args);
     static void t_ButtonHandler(void* args);
+
+    static void ButtonAlarmAbortMode();
 
     static void delaySinceStateChange(ulong val);
 
