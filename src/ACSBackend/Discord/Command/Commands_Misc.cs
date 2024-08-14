@@ -10,6 +10,7 @@ using DSharpPlus;
 using DSharpPlus.SlashCommands.Attributes;
 using ACSBackend.Comms.WebServer.Controllers;
 using ACSBackend.Comms.DeviceComm;
+using System.Net;
 
 namespace ACSBackend.Discord.Commands
 {
@@ -75,6 +76,25 @@ namespace ACSBackend.Discord.Commands
 
             if (suc) await ctx.EditResponseAsync(DiscordColor.SpringGreen, "Success", "Successfully pinged the Core Device");
             else await ctx.EditResponseAsync(DiscordColor.Red, "Error", "Something went wrong while pinging the Core Device");
+        }
+
+        [SlashCommand("setcoreip", "Set Core Device IP Address")]
+        public async Task SetCoreIP(InteractionContext ctx, [Option("ip_addr", "IP Address")] string ipStr)
+        {
+            await ctx.DeferAsync();
+
+            if(!IPAddress.TryParse(ipStr, out _))
+            {
+                await ctx.EditResponseAsync(DiscordColor.Red, "Error", "Invalid IP Address");
+                return;
+            }
+
+            ConfigManager.SetConfig(ConfigEnum.COREDEVICE_IP, ipStr);
+
+            bool suc = await DeviceCommMain.Core.PingDevice();
+
+            if (suc) await ctx.EditResponseAsync(DiscordColor.SpringGreen, "Success", "Successfully changed the IP Address & pinged the Core Device");
+            else await ctx.EditResponseAsync(DiscordColor.Red, "Error", "Something went wrong while updating IP Address");
         }
 
     }

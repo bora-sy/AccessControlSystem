@@ -9,6 +9,11 @@ void ActionButtons::Initialize()
     pinMode(PIN_BTN_UNLOCK_LED, OUTPUT);
     pinMode(PIN_BTN_DISENG_LED, OUTPUT);
 
+    digitalWrite(PIN_BTN_UNLOCK_LED, LOW);
+    digitalWrite(PIN_BTN_DISENG_LED, HIGH);
+
+    delay(3000);
+
     xTaskCreate(t_LedHandler, "LedHandler", 4096, NULL, 1, NULL);
     xTaskCreate(t_ButtonHandler, "ButtonHandler", 4096, NULL, 1, NULL);
 
@@ -45,8 +50,10 @@ bool ActionButtons::ShouldEngageDisengage()
 
 void ActionButtons::SetLED(LED led)
 {
-    digitalWrite(PIN_BTN_UNLOCK_LED, led & LEDUnlock == LEDUnlock);
-    digitalWrite(PIN_BTN_DISENG_LED, led & LEDDisengage == LEDDisengage);
+    REMOTELOG_I("Received: %d", led);
+
+    digitalWrite(PIN_BTN_UNLOCK_LED, (led & LEDUnlock) == LEDUnlock);
+    digitalWrite(PIN_BTN_DISENG_LED, (led & LEDDisengage) == LEDDisengage);
 }
 
 void ActionButtons::SetLEDState(LEDState newState)
