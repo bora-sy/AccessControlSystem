@@ -9,11 +9,6 @@ void ActionButtons::Initialize()
     pinMode(PIN_BTN_UNLOCK_LED, OUTPUT);
     pinMode(PIN_BTN_DISENG_LED, OUTPUT);
 
-    digitalWrite(PIN_BTN_UNLOCK_LED, LOW);
-    digitalWrite(PIN_BTN_DISENG_LED, HIGH);
-
-    delay(3000);
-
     xTaskCreate(t_LedHandler, "LedHandler", 4096, NULL, 1, NULL);
     xTaskCreate(t_ButtonHandler, "ButtonHandler", 4096, NULL, 1, NULL);
 
@@ -108,10 +103,17 @@ void ActionButtons::t_LedHandler(void* args)
                 SetLED(NONE);
                 delay(100);
                 break;
+            
+            case LEDState::Disabled:
+            break;
         }
 
         lastState = currState;
     }
+
+    REMOTELOG_E("LED Handler Task Ended");
+    vTaskDelete(NULL);
+    delay(0);
 }
 
 void ActionButtons::t_ButtonHandler(void* args)
@@ -120,24 +122,39 @@ void ActionButtons::t_ButtonHandler(void* args)
     {
         if(ActionHandler::IsAlarmOn())
         {
-            REMOTELOG_V("Alarm ON");
             bool unlockState = digitalRead(PIN_BTN_UNLOCK);
             bool disengageState = digitalRead(PIN_BTN_DISENG);
-            REMOTELOG_D("Unlock: %d, Disengage: %d", unlockState, disengageState);
             if(unlockState && disengageState)
-            {
+            {   
+                REMOTELOG_D("Both buttons are pressed");
+                
+                SetLEDState(LEDState::Disabled);
+                delay(100);
                 SetLED((LED)(LEDUnlock | LEDDisengage));
                 REMOTELOG_D("LEDS ON");
-                delay(1000);
+                delay(3000);
                 if(!digitalRead(PIN_BTN_UNLOCK) || !digitalRead(PIN_BTN_DISENG))
                 {
                     REMOTELOG_D("One of the buttons is not pressed");
+                    
+                    if(ActionHandler::IsAlarmOn())
+                    {
+                        REMOTELOG_D("Alarm is on, entering LED state Alarm");
+                        SetLEDState(LEDState::Alarm);
+                    }
+                    else REMOTELOG_D("Alarm is not on");
                     continue;
                 }
 
 
 
                 ButtonAlarmAbortMode();
+                if(ActionHandler::IsAlarmOn())
+                {
+                        REMOTELOG_D("Alarm is on, entering LED state Alarm");
+                    SetLEDState(LEDState::Alarm);
+                }
+                else REMOTELOG_D("Alarm is not on");
             }
 
 
@@ -160,8 +177,12 @@ void ActionButtons::t_ButtonHandler(void* args)
             }
         }
 
-        delay(200);
+        delay(10);
     }
+
+    REMOTELOG_E("Button Handler Task Ended");
+    vTaskDelete(NULL);
+    delay(0);
 }
 
 
@@ -182,6 +203,8 @@ void ActionButtons::ButtonAlarmAbortMode()
 
     SetLED(NONE);
 
+    REMOTELOG_D("Entering Button Alarm Abort Mode");
+
     for(;;)
     {
         if(!ActionHandler::IsAlarmOn()) return;
@@ -192,6 +215,7 @@ void ActionButtons::ButtonAlarmAbortMode()
             SetLED(LEDUnlock);
             delay(50);
             SetLED(NONE);
+            REMOTELOG_D("+0");
         }
         else if(ShouldEngageDisengage())
         {
@@ -199,6 +223,7 @@ void ActionButtons::ButtonAlarmAbortMode()
             SetLED(LEDDisengage);
             delay(50);
             SetLED(NONE);
+            REMOTELOG_D("+1");
         }
 
         if(sequenceIndex == 8)
@@ -207,8 +232,7 @@ void ActionButtons::ButtonAlarmAbortMode()
             
             return;
         }
-
-        if(ActionHandler::IsAlarmOn()) delay(50);
-        SetLEDState(LEDState::Alarm);
+        
+        delay(10);
     }
 }

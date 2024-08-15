@@ -205,8 +205,6 @@ void ActionHandler::Alarm()
 
     for(;;)
     {
-        REMOTELOG_V("Target Action: %d", TargetAction);
-
         if(TargetAction == ABORTALARM)
         {
             TargetAction = ACTNONE;

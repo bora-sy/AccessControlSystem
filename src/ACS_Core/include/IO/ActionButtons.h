@@ -6,7 +6,8 @@
 
 enum LEDState
 {
-    Initializing = 0,
+    Disabled = 0,
+    Initializing,
 
     Locked,
     Unlocked,
