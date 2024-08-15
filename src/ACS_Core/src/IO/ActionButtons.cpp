@@ -109,6 +109,7 @@ void ActionButtons::t_LedHandler(void* args)
         }
 
         lastState = currState;
+        delay(10);
     }
 
     REMOTELOG_E("LED Handler Task Ended");
@@ -202,6 +203,8 @@ void ActionButtons::ButtonAlarmAbortMode()
     uint8_t sequenceIndex = 0;
 
     SetLED(NONE);
+    ShouldUnlock();
+    ShouldEngageDisengage();
 
     REMOTELOG_D("Entering Button Alarm Abort Mode");
 

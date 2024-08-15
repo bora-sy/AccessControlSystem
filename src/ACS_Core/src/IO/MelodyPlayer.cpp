@@ -1,6 +1,6 @@
 #include "IO/MelodyPlayer.h"
 
-void Melody::AddNote(uint32_t tone, uint32_t duration)
+void Melody::AddTone(uint32_t tone, uint32_t duration)
 {
     if (toneCount >= MELODY_MAXTONECOUNT)
         return;
@@ -10,9 +10,26 @@ void Melody::AddNote(uint32_t tone, uint32_t duration)
     toneCount++;
 }
 
+void Melody::AddNote(note_t note, uint8_t octave, uint32_t duration)
+{
+    const uint16_t noteFrequencyBase[12] = {
+    //   C        C#       D        Eb       E        F       F#        G       G#        A       Bb        B
+        4186,    4435,    4699,    4978,    5274,    5588,    5920,    6272,    6645,    7040,    7459,    7902
+    };
+
+    if(octave > 8 || note >= NOTE_MAX)
+    {
+        REMOTELOG_W("Invalid note or octave (Note: %d / Octave: %d)", note, octave);
+        return;
+    }
+
+    uint32_t noteFreq =  (uint32_t)noteFrequencyBase[note] / (uint32_t)(1 << (8-octave));
+    AddTone(noteFreq, duration);
+}
+
 void Melody::AddRest(uint32_t duration)
 {
-    AddNote(0, duration);
+    AddTone(0, duration);
 }
 
 //----------------------------------------------

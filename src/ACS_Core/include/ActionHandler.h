@@ -86,6 +86,7 @@ class ActionHandler
     static Melody melody_Lock;
     static Melody melody_Disengage;
     static Melody melody_Engage;
+    static Melody melody_AbortAlarm;
 
     static void InitializeMelodies();
 

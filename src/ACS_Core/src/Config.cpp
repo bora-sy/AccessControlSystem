@@ -14,9 +14,9 @@ bool Config::Initialize()
     {
 
         Melody failMelody;
-        failMelody.AddNote(600, 200);
+        failMelody.AddTone(600, 200);
         failMelody.AddRest(100);
-        failMelody.AddNote(600, 200);
+        failMelody.AddTone(600, 200);
 
         MelodyPlayer::PlayMelody(failMelody);
 

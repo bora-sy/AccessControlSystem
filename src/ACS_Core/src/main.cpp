@@ -47,9 +47,9 @@ void setup()
   delay(350);
 
   Melody startMelody;
-  startMelody.AddNote(1000, 250);
+  startMelody.AddTone(1000, 250);
   startMelody.AddRest(100);
-  startMelody.AddNote(2000, 150);
+  startMelody.AddTone(2000, 150);
   MelodyPlayer::PlayMelody(startMelody);
 
   delay(500);

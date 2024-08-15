@@ -9,25 +9,25 @@ bool WebClient::Initialize()
     Melody pingFailedMelody;
     Melody failedMelody;
 
-    pingingMelody.AddNote(600, 100);
+    pingingMelody.AddTone(600, 100);
     pingingMelody.AddRest(50);
-    pingingMelody.AddNote(1200, 100);
+    pingingMelody.AddTone(1200, 100);
 
-    pingSucMelody.AddNote(600, 100);
+    pingSucMelody.AddTone(600, 100);
     pingSucMelody.AddRest(50);
-    pingSucMelody.AddNote(1200, 100);
+    pingSucMelody.AddTone(1200, 100);
     pingSucMelody.AddRest(200);
-    pingSucMelody.AddNote(1200, 100);
+    pingSucMelody.AddTone(1200, 100);
 
-    failedMelody.AddNote(600, 200);
+    failedMelody.AddTone(600, 200);
     failedMelody.AddRest(100);
-    failedMelody.AddNote(500, 200);
+    failedMelody.AddTone(500, 200);
     failedMelody.AddRest(100);
-    failedMelody.AddNote(400, 200);
+    failedMelody.AddTone(400, 200);
 
-    pingFailedMelody.AddNote(1000, 100);
+    pingFailedMelody.AddTone(1000, 100);
     pingFailedMelody.AddRest(50);
-    pingFailedMelody.AddNote(500, 100);
+    pingFailedMelody.AddTone(500, 100);
 
     REMOTELOG_I("Initializing WebClient");
     WebConfig config = Config::webConfig;

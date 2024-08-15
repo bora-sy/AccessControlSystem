@@ -15,6 +15,7 @@ Melody ActionHandler::melody_Unlock;
 Melody ActionHandler::melody_Lock;
 Melody ActionHandler::melody_Disengage;
 Melody ActionHandler::melody_Engage;
+Melody ActionHandler::melody_AbortAlarm;
 
 void ActionHandler::Initialize()
 {
@@ -41,23 +42,35 @@ void ActionHandler::Initialize()
 
 void ActionHandler::InitializeMelodies()
 {
-    melody_Unlock.AddNote(2000, 150);
-    melody_Unlock.AddNote(1000, 100);
+    melody_Unlock.AddTone(2000, 150);
+    melody_Unlock.AddTone(1000, 100);
     melody_Unlock.AddRest(200);
-    melody_Unlock.AddNote(1000, 200);
+    melody_Unlock.AddTone(1000, 200);
 
-    melody_Lock.AddNote(1500, 1000);
-    melody_Lock.AddNote(750, 200);
+    melody_Lock.AddTone(1500, 1000);
+    melody_Lock.AddTone(750, 200);
 
-    melody_Engage.AddNote(1500, 100);
+    melody_Engage.AddTone(1500, 100);
     melody_Engage.AddRest(50);
-    melody_Engage.AddNote(1500, 100);
+    melody_Engage.AddTone(1500, 100);
     melody_Engage.AddRest(50);
-    melody_Engage.AddNote(1500, 100);
+    melody_Engage.AddTone(1500, 100);
 
-    melody_Disengage.AddNote(1500, 100);
-    melody_Disengage.AddNote(1000, 100);
-    melody_Disengage.AddNote(750, 150);
+    melody_Disengage.AddTone(1500, 100);
+    melody_Disengage.AddTone(1000, 100);
+    melody_Disengage.AddTone(750, 150);
+
+    melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
+    melody_AbortAlarm.AddRest(50);
+    melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
+    melody_AbortAlarm.AddRest(150);
+    melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
+    melody_AbortAlarm.AddRest(150);
+    melody_AbortAlarm.AddNote(note_t::NOTE_C, 7, 150);
+    melody_AbortAlarm.AddRest(50);
+    melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
+    melody_AbortAlarm.AddRest(50);
+    melody_AbortAlarm.AddNote(note_t::NOTE_G, 7, 150);
 }
 
 DoorState ActionHandler::GetCurrentState()
@@ -221,7 +234,18 @@ void ActionHandler::Alarm()
 
     delay(100);
 
-    action_Unlock(ActionSource::SRCNONE);
+    if(Lock::IsDoorClosed())
+    {
+        action_Lock(false);
+    }
+    else
+    {
+        action_Unlock(ActionSource::SRCNONE, false);
+    }
+
+    MelodyPlayer::PlayMelody(melody_AbortAlarm);
+
+
 }
 
 void ActionHandler::action_Lock(bool useFeedback)

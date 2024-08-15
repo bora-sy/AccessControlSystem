@@ -9,27 +9,27 @@ Melody NetworkMain::connectionLostMelody;
 bool NetworkMain::Initialize()
 {
 
-    initMelody.AddNote(1500, 100);
+    initMelody.AddTone(1500, 100);
     initMelody.AddRest(50);
-    initMelody.AddNote(1500, 100);
+    initMelody.AddTone(1500, 100);
 
-    connectedMelody.AddNote(1500, 100);
+    connectedMelody.AddTone(1500, 100);
     connectedMelody.AddRest(50);
-    connectedMelody.AddNote(1500, 100);
+    connectedMelody.AddTone(1500, 100);
     connectedMelody.AddRest(50);
-    connectedMelody.AddNote(1500, 100);
+    connectedMelody.AddTone(1500, 100);
 
-    failedMelody.AddNote(600, 200);
+    failedMelody.AddTone(600, 200);
     failedMelody.AddRest(100);
-    failedMelody.AddNote(600, 200);
+    failedMelody.AddTone(600, 200);
     failedMelody.AddRest(100);
-    failedMelody.AddNote(600, 200);
+    failedMelody.AddTone(600, 200);
 
-    connectionLostMelody.AddNote(1500, 100);
+    connectionLostMelody.AddTone(1500, 100);
     connectionLostMelody.AddRest(50);
-    connectionLostMelody.AddNote(1000, 100);
+    connectionLostMelody.AddTone(1000, 100);
     connectionLostMelody.AddRest(50);
-    connectionLostMelody.AddNote(700, 100);
+    connectionLostMelody.AddTone(700, 100);
 
     //--------------------------------------------
 

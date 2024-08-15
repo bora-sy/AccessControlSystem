@@ -14,7 +14,8 @@ struct Melody
     uint32_t toneDurations[MELODY_MAXTONECOUNT];
     uint16_t toneCount = 0;
 
-    void AddNote(uint32_t tone, uint32_t duration);
+    void AddTone(uint32_t tone, uint32_t duration);
+    void AddNote(note_t note, uint8_t octave, uint32_t duration);
 
     void AddRest(uint32_t duration);
 };
