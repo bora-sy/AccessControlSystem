@@ -27,6 +27,7 @@ void ActionHandler::Initialize()
     {
         CurrentState = LOCKED;
         ActionButtons::SetLEDState(LEDState::Locked);
+        LEDStrip::SetStripState(LEDState::Locked);
     }
     else
     {
@@ -214,6 +215,7 @@ void ActionHandler::Alarm()
     REMOTELOG_D("ALARM MODE");
     AlarmOn = true;
     ActionButtons::SetLEDState(LEDState::Alarm);
+    LEDStrip::SetStripState(LEDState::Alarm);
     WebClient::LogAlarm(false, true);
 
     for(;;)
@@ -259,6 +261,7 @@ void ActionHandler::action_Lock(bool useFeedback)
     }
 
     ActionButtons::SetLEDState(LEDState::Locked);
+    LEDStrip::SetStripState(LEDState::Locked);
     CurrentState = LOCKED;
 
     if(useFeedback)
@@ -282,6 +285,7 @@ void ActionHandler::action_Unlock(ActionSource src, bool useFeedback)
     }
 
     ActionButtons::SetLEDState(LEDState::Unlocked);
+    LEDStrip::SetStripState(LEDState::Unlocked);
     CurrentState = UNLOCKED_WAITINGDOOROPEN;
 
     if(useFeedback)
@@ -334,6 +338,7 @@ void ActionHandler::action_Engage(bool useFeedback)
     else
     {
         ActionButtons::SetLEDState(LEDState::Unlocked);
+        LEDStrip::SetStripState(LEDState::Unlocked);
         CurrentState = UNLOCKED;
     }
 
@@ -354,6 +359,7 @@ void ActionHandler::action_Disengage(bool useFeedback)
     }
 
     ActionButtons::SetLEDState(LEDState::Disengaged);
+    LEDStrip::SetStripState(LEDState::Disengaged);
     CurrentState = DISENGAGED;
     
     Lock::SetSolenoid(true);

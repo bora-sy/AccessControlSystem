@@ -5,6 +5,7 @@
 #include "RemoteLogging.h"
 #include "Network/WebClient.h"
 #include "IO/ActionButtons.h"
+#include "IO/LEDStrip.h"
 
 #define DOOR_LOCK_TIMEOUT 5000
 
