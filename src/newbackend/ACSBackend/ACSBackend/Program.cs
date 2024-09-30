@@ -1,4 +1,5 @@
 
+using ACSBackend.Comms.DeviceComm;
 using ACSBackend.Configurations;
 using ACSBackend.Database;
 using ACSBackend.Discord;
@@ -14,6 +15,7 @@ namespace ACSBackend
 
             InitConfigurations(builder);
             InitDB(builder);
+            InitDeviceComm(builder);
             InitDiscord(builder);
 
             // Add services to the container.
@@ -46,6 +48,7 @@ namespace ACSBackend
 
             builder.Services.Configure<DBConfiguration>(config.GetSection("DBConfig"));
             builder.Services.Configure<DCConfiguration>(config.GetSection("DCConfig"));
+            builder.Services.Configure<DeviceConfiguration>(config.GetSection("DeviceConfig"));
         }
 
         static void InitDB(WebApplicationBuilder builder)
@@ -58,7 +61,14 @@ namespace ACSBackend
 
         static void InitDiscord(WebApplicationBuilder builder)
         {
+            builder.Services.AddSingleton<DiscordService>();
             builder.Services.AddHostedService<DiscordService>();
+        }
+
+        static void InitDeviceComm(WebApplicationBuilder builder)
+        {
+            builder.Services.AddSingleton<DeviceCommService>();
+            builder.Services.AddHostedService<DeviceCommService>();
         }
     }
 }

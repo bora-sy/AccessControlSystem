@@ -42,7 +42,7 @@ namespace ACSBackend.Discord
                 Services = services
             });
 
-            slash.RegisterCommands<TestCommands>();
+            slash.RegisterCommands<Commands_Misc>();
 
 
 
@@ -63,7 +63,7 @@ namespace ACSBackend.Discord
 
         public async Task StopAsync(CancellationToken cancellationToken)
         {
-
+            await Client.DisconnectAsync();
         }
     }
 }
