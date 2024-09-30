@@ -1,4 +1,9 @@
 
+using ACSBackend.Configurations;
+using ACSBackend.Database;
+using ACSBackend.Discord;
+using Microsoft.EntityFrameworkCore;
+
 namespace ACSBackend
 {
     public class Program
@@ -6,6 +11,10 @@ namespace ACSBackend
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            InitConfigurations(builder);
+            InitDB(builder);
+            InitDiscord(builder);
 
             // Add services to the container.
 
@@ -29,6 +38,27 @@ namespace ACSBackend
             app.MapControllers();
 
             app.Run();
+        }
+
+        static void InitConfigurations(WebApplicationBuilder builder)
+        {
+            var config = builder.Configuration;
+
+            builder.Services.Configure<DBConfiguration>(config.GetSection("DBConfig"));
+            builder.Services.Configure<DCConfiguration>(config.GetSection("DCConfig"));
+        }
+
+        static void InitDB(WebApplicationBuilder builder)
+        {
+            string? connectionString = builder.Configuration.GetSection("DBConfig")[nameof(DBConfiguration.ConnectionString)];
+            if (connectionString == null) throw new Exception("DB Connection String not found in configuration");
+
+            builder.Services.AddDbContext<AppDBContext>(options => options.UseNpgsql(connectionString));
+        }
+
+        static void InitDiscord(WebApplicationBuilder builder)
+        {
+            builder.Services.AddHostedService<DiscordService>();
         }
     }
 }
