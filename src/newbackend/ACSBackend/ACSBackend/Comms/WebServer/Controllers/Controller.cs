@@ -49,7 +49,7 @@ namespace ACSBackend.Comms.WebServer.Controllers
 
             if (user == null) return BadRequest("Incorrect PIN");
 
-            var res = await _deviceComm.CoreComm.ExecuteAction(deviceAction, DeviceActionSource.Web, user);
+            var res = await _deviceComm.CoreComm.ExecuteActionAsync(deviceAction, DeviceActionSource.Web, user);
 
 
             return res switch

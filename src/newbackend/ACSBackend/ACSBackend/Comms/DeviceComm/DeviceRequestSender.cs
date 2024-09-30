@@ -19,7 +19,7 @@ namespace ACSBackend.Comms.DeviceComm
 
         private string BuildURL(string path) => $"http://{IP}:{DEVICE_PORT}{path}";
 
-        private async Task<RequestResponse> SendAsync(string path, HttpMethod method)
+        private async Task<RequestResponse> SendAsync(string path, HttpMethod method, TimeSpan timeout)
         {
             string url = BuildURL(path);
 
@@ -29,6 +29,8 @@ namespace ACSBackend.Comms.DeviceComm
             {
                 msg.Headers.Add("User-Agent", BACKENDUSERAGENT);
                 msg.Headers.Add("CommKey", CommKey);
+
+                client.Timeout = timeout;
 
                 HttpResponseMessage response = await client.SendAsync(msg);
 
@@ -46,14 +48,14 @@ namespace ACSBackend.Comms.DeviceComm
 
         }
 
-        public async Task<RequestResponse> GET(string path)
+        public async Task<RequestResponse> GET(string path, TimeSpan timeout)
         {
-            return await SendAsync(path, HttpMethod.Get);
+            return await SendAsync(path, HttpMethod.Get, timeout);
         }
 
-        public async Task<RequestResponse> POST(string path)
+        public async Task<RequestResponse> POST(string path, TimeSpan timeout)
         {
-            return await SendAsync(path, HttpMethod.Post);
+            return await SendAsync(path, HttpMethod.Post, timeout);
         }
     }
 

@@ -11,10 +11,10 @@ namespace ACSBackend.Comms.DeviceComm
             RequestSender = requestSender;
         }
 
-        public async Task<ActionRequestResult> ExecuteAction(DeviceAction action, DeviceActionSource source, User? user)
+        public async Task<ActionRequestResult> ExecuteActionAsync(DeviceAction action, DeviceActionSource source, User? user)
         {
             string path = $"/action?action={(int)action}&actionsource={(int)source}";
-            var res = (await RequestSender.POST(path)).ToActionRequestResult() ?? ActionRequestResult.ERROR;
+            var res = (await RequestSender.POST(path, TimeSpan.FromSeconds(5))).ToActionRequestResult() ?? ActionRequestResult.ERROR;
             //await LoggerIntegration.LogActionAsync(action, res, source, user);
 
             return res;
@@ -22,7 +22,7 @@ namespace ACSBackend.Comms.DeviceComm
 
         public async Task<bool> PingDevice()
         {
-            return (await RequestSender.GET("/ping")).IsSuccessStatusCode;
+            return (await RequestSender.GET("/ping", TimeSpan.FromSeconds(5))).IsSuccessStatusCode;
         }
 
     }
