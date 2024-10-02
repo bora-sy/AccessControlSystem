@@ -3,6 +3,7 @@ using ACSBackend.Comms.DeviceComm;
 using ACSBackend.Configurations;
 using ACSBackend.Database;
 using ACSBackend.Discord;
+using ACSBackend.Misc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ACSBackend
@@ -69,6 +70,11 @@ namespace ACSBackend
         {
             builder.Services.AddSingleton<DeviceCommService>();
             builder.Services.AddHostedService<DeviceCommService>();
+        }
+
+        static void InitActionLogger(WebApplicationBuilder builder)
+        {
+            builder.Services.AddScoped<ActionLoggerService>();
         }
     }
 }
