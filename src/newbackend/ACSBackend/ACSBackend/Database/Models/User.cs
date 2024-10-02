@@ -15,6 +15,6 @@ namespace ACSBackend.Database.Models
         public ulong? DiscordUserID { get; set; }
 
         public ulong? ACSPin { get; set; }
-        public uint ACSCardUID { get; set; }
+        public uint? ACSCardUID { get; set; }
     }
 }

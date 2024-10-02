@@ -17,7 +17,7 @@ namespace ACSBackend.Comms.DeviceComm
 
 
 
-        public DeviceCommService(ILogger<DeviceCommService> logger, IOptions<DeviceConfiguration> config)
+        public DeviceCommService(ILogger<DeviceCommService> logger, IOptions<DeviceConfiguration> config, IServiceProvider services)
         {
             _logger = logger;
             _config = config.Value;
@@ -28,7 +28,7 @@ namespace ACSBackend.Comms.DeviceComm
             CoreReqSender = new DeviceRequestSender(_config.CoreCommKey, CoreIP);
             FrontReqSender = new DeviceRequestSender(_config.FrontCommKey, FrontIP);
 
-            CoreComm = new CoreComm(CoreReqSender);
+            CoreComm = new CoreComm(CoreReqSender, services);
         }
 
 
