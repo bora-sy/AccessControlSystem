@@ -45,6 +45,9 @@ private:
     static bool LoadConfig(const char* path, void* config, size_t size);
     static bool SaveConfig(const char* path, void* config, size_t size);
 
+    static bool SetWebConfig(const char* commKey, uint8_t ipb1, uint8_t ipb2, uint8_t ipb3, uint8_t ipb4);
+    static bool SetWiFiConfig(const char* ssid, const char* password);
+
 public:
     static WiFiConfig wifiConfig;
     static OTAConfig otaConfig;

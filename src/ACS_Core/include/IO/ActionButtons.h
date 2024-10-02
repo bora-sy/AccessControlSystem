@@ -1,7 +1,4 @@
 #pragma once
-#include "Pinout.h"
-#include "RemoteLogging.h"
-#include "ActionHandler.h" 
 
 
 enum LEDState
@@ -14,6 +11,10 @@ enum LEDState
     Disengaged,
     Alarm
 };
+
+#include "Pinout.h"
+#include "RemoteLogging.h"
+#include "ActionHandler.h" 
 
 enum LED : int
 {

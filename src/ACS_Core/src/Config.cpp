@@ -82,3 +82,18 @@ WebConfig::WebConfig()
 {
     memset(CommKey, 0, 33);
 }
+
+bool Config::SetWebConfig(const char *commKey, uint8_t ipb1, uint8_t ipb2, uint8_t ipb3, uint8_t ipb4)
+{
+    uint8_t serverIP[4] = {ipb1, ipb2, ipb3, ipb4};
+    WebConfig newConfig(commKey, serverIP);
+    webConfig = newConfig;
+    return SaveConfig(CONFIGPATH_WEB, &webConfig, sizeof(WebConfig));
+}
+
+bool Config::SetWiFiConfig(const char *ssid, const char *password)
+{
+    WiFiConfig newConfig(ssid, password);
+    wifiConfig = newConfig;
+    return SaveConfig(CONFIGPATH_WIFI, &wifiConfig, sizeof(WiFiConfig));
+}
