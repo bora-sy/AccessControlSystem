@@ -18,6 +18,7 @@ namespace ACSBackend
             InitDB(builder);
             InitDeviceComm(builder);
             InitDiscord(builder);
+            InitActionLogger(builder);
 
             // Add services to the container.
 

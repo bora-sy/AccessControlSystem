@@ -47,6 +47,7 @@ private:
 
     static bool SetWebConfig(const char* commKey, uint8_t ipb1, uint8_t ipb2, uint8_t ipb3, uint8_t ipb4);
     static bool SetWiFiConfig(const char* ssid, const char* password);
+    static bool SetOTAConfig(const char *username, const char *password);
 
 public:
     static WiFiConfig wifiConfig;

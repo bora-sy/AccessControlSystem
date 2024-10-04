@@ -116,7 +116,7 @@ String WebClient::BuildURL(String path)
 
 bool WebClient::PingServer()
 {
-    WebResponse response = SendRequest("/coredevice/ping", "GET");
+    WebResponse response = SendRequest("/core/ping", "GET");
 
     if (response.HttpCode != 200)
     {
@@ -140,7 +140,7 @@ void WebClient::LogAlarm(bool preAlarm, bool alarmStatus)
     {
         bool* vals = (bool*)arg;
 
-        String url = RemoteLogging::FormatString("/coredevice/logalarm?prealarm=%d&status=%d", (int)vals[0], (int)vals[1]);
+        String url = RemoteLogging::FormatString("/core/logalarm?prealarm=%d&status=%d", (int)vals[0], (int)vals[1]);
         delete[] vals;
         
         WebResponse response = SendRequest(url, "POST");

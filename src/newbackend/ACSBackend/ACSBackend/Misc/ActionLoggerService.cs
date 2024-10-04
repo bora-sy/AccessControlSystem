@@ -27,25 +27,37 @@ namespace ACSBackend.Misc
                 Result = result
             };
 
-            await Task.WhenAll(LogToDB(log), LogToDiscord(log));
+
+            await _db.ActionLogs.AddAsync(log);
+            await _db.SaveChangesAsync();
+
+
+            await LogToDB(log);
+            await LogToDiscord(log);
+            
         }
 
         private async Task LogToDB(ActionLog log)
         {
-            await _db.ActionLogs.AddAsync(log);
-            await _db.SaveChangesAsync();
         }
 
         private async Task LogToDiscord(ActionLog log)
         {
             var channel = await _dc.GetChannelAsync(_dcConfig.ActionLogChannel);
+            var guild = await _dc.GetGuildAsync(channel.GuildId!.Value);
 
-            var embed = new DiscordEmbedBuilder()
-                .WithColor(DiscordColor.Gold)
-                .WithTimestamp(log.Time.ToLocalTime())
-                .WithAuthor(log.User == null ? "Unknown" : $"{(log.User.DiscordUserID != null ? $"<@{log.User.DiscordUserID}> - " : "")}{log.User.NameSurname}", log.User?.DiscordUserID == null ? null : (await channel.Guild.GetMemberAsync(log.User.DiscordUserID.Value)).AvatarUrl)
-                .AddField("Action", log.Action.ToString())
-                .AddField("Result", log.Result.ToString());
+            var embed = new DiscordEmbedBuilder();
+            embed.Color = DiscordColor.Gold;
+            embed.Timestamp = log.Time.ToLocalTime();
+            embed.Author = new DiscordEmbedBuilder.EmbedAuthor();
+            embed.Author.Name = log.User == null ? "Unknown" : $"{(log.User.DiscordUserID != null ? $"<@{log.User.DiscordUserID}> - " : "")}{log.User.NameSurname}";
+
+            DiscordMember? member = log.User?.DiscordUserID == null ? null : await guild.GetMemberAsync(log.User.DiscordUserID.Value);
+
+            embed.Author.IconUrl = member == null ? null : member.AvatarUrl;
+            embed = embed
+            .AddField("Action", log.Action.ToString())
+            .AddField("Result", log.Result.ToString());
 
             await channel.SendMessageAsync(embed);
         }

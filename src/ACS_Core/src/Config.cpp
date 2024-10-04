@@ -7,6 +7,11 @@ WebConfig Config::webConfig;
 
 bool Config::Initialize()
 {
+    SetWebConfig("12345678", 10,134,100,230);
+    SetWiFiConfig("BK_School", "8K-$cH0oL!");
+    SetOTAConfig("admin","1234");
+    
+
     if (
         !LoadConfig(CONFIGPATH_WIFI, &wifiConfig, sizeof(WiFiConfig)) ||
         !LoadConfig(CONFIGPATH_OTA, &otaConfig, sizeof(OTAConfig)) ||
@@ -83,6 +88,8 @@ WebConfig::WebConfig()
     memset(CommKey, 0, 33);
 }
 
+// -----------
+
 bool Config::SetWebConfig(const char *commKey, uint8_t ipb1, uint8_t ipb2, uint8_t ipb3, uint8_t ipb4)
 {
     uint8_t serverIP[4] = {ipb1, ipb2, ipb3, ipb4};
@@ -96,4 +103,11 @@ bool Config::SetWiFiConfig(const char *ssid, const char *password)
     WiFiConfig newConfig(ssid, password);
     wifiConfig = newConfig;
     return SaveConfig(CONFIGPATH_WIFI, &wifiConfig, sizeof(WiFiConfig));
+}
+
+bool Config::SetOTAConfig(const char *username, const char *password)
+{
+    OTAConfig newConfig(username, password);
+    otaConfig = newConfig;
+    return SaveConfig(CONFIGPATH_OTA, &otaConfig, sizeof(OTAConfig));
 }
