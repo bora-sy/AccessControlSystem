@@ -40,7 +40,7 @@ void InitOther(void (*initFunc)(), const char* title)
 
 void setup()
 { 
-  Serial.begin(115200);
+  Serial.begin(921600);
   MelodyPlayer::Initialize();
   ActionButtons::Initialize();
 

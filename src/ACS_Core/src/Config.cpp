@@ -1,4 +1,6 @@
 #include "Config.h"
+#include "SECR.h"
+
 #define TAG "Config"
 
 WiFiConfig Config::wifiConfig;
@@ -8,7 +10,7 @@ WebConfig Config::webConfig;
 bool Config::Initialize()
 {
     SetWebConfig("12345678", 10,134,100,230);
-    SetWiFiConfig("BK_School", "8K-$cH0oL!");
+    SetWiFiConfig(BKS_SSID, BKS_PW);
     SetOTAConfig("admin","1234");
     
 
