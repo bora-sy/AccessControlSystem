@@ -17,7 +17,7 @@ namespace ACSBackend
             InitConfigurations(builder);
             InitDB(builder);
             InitDeviceComm(builder);
-            InitDiscord(builder);
+            //InitDiscord(builder);
             InitActionLogger(builder);
 
             // Add services to the container.
@@ -63,8 +63,8 @@ namespace ACSBackend
 
         static void InitDiscord(WebApplicationBuilder builder)
         {
-            builder.Services.AddSingleton<DiscordService>();
-            builder.Services.AddHostedService<DiscordService>();
+            //builder.Services.AddSingleton<DiscordService>();
+            //builder.Services.AddHostedService<DiscordService>();
         }
 
         static void InitDeviceComm(WebApplicationBuilder builder)
