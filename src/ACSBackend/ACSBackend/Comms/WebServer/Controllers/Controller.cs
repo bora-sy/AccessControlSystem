@@ -35,11 +35,13 @@ namespace ACSBackend.Comms.WebServer.Controllers
         {
             action = action.ToLower();
 
+
             DeviceAction deviceAction = action switch
             {
                 "unlock" => DeviceAction.Unlock,
                 "engage" => DeviceAction.Engage,
                 "disengage" => DeviceAction.Disengage,
+                "abortalarm" => DeviceAction.AbortAlarm,
                 _ => (DeviceAction)(-1)
             };
 

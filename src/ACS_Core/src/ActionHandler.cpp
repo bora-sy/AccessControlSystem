@@ -61,6 +61,7 @@ void ActionHandler::InitializeMelodies()
     melody_Disengage.AddTone(1000, 100);
     melody_Disengage.AddTone(750, 150);
 
+    melody_AbortAlarm.AddRest(300);
     melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
     melody_AbortAlarm.AddRest(50);
     melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
@@ -68,9 +69,9 @@ void ActionHandler::InitializeMelodies()
     melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
     melody_AbortAlarm.AddRest(150);
     melody_AbortAlarm.AddNote(note_t::NOTE_C, 7, 150);
-    melody_AbortAlarm.AddRest(50);
+    melody_AbortAlarm.AddRest(100);
     melody_AbortAlarm.AddNote(note_t::NOTE_E, 7, 150);
-    melody_AbortAlarm.AddRest(50);
+    melody_AbortAlarm.AddRest(200);
     melody_AbortAlarm.AddNote(note_t::NOTE_G, 7, 150);
 }
 
@@ -83,7 +84,6 @@ DoorState ActionHandler::GetCurrentState()
 void ActionHandler::ExecuteAction(Action act, ActionSource src)
 {
     TargetAction = IsAlarmOn() ? Action::ABORTALARM : act;
-    TargetAction = act;
     TargetActionSource = src;
 }
 

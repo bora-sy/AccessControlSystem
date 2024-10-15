@@ -33,6 +33,8 @@ namespace ACSBackend.Comms.RemoteLogging
 
             RemoteLog log = new RemoteLog(buf, data.RemoteEndPoint);
 
+            Console.WriteLine($"DEVICELOG [{DateTime.Now}] {log.Message}");
+
             if (OnLog != null) OnLog.Invoke(log);
 
             if (RedirectClient != null)
@@ -49,7 +51,9 @@ namespace ACSBackend.Comms.RemoteLogging
             {
                 try
                 {
+
                     RedirectClient.Close();
+                    Console.WriteLine("CLOSED PREVIOUS REDIRECT CLIENT!!");
                 }
                 finally
                 {
@@ -62,6 +66,8 @@ namespace ACSBackend.Comms.RemoteLogging
 
             RedirectClient = new UdpClient();
             RedirectClient.Connect(EP);
+
+            Console.WriteLine("REDIRECTING LOGS!!!");
         }
     }
 
