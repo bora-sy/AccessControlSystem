@@ -9,7 +9,7 @@ WebConfig Config::webConfig;
 
 bool Config::Initialize()
 {
-    SetWebConfig("12345678", 10,134,100,230);
+    SetWebConfig("12345678", 10,134,100,183);
     SetWiFiConfig(BKS_SSID, BKS_PW);
     SetOTAConfig("admin","1234");
     

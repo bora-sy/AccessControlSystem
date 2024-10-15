@@ -82,6 +82,7 @@ DoorState ActionHandler::GetCurrentState()
 
 void ActionHandler::ExecuteAction(Action act, ActionSource src)
 {
+    TargetAction = IsAlarmOn() ? Action::ABORTALARM : act;
     TargetAction = act;
     TargetActionSource = src;
 }

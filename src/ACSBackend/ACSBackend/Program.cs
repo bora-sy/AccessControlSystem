@@ -1,5 +1,6 @@
 
 using ACSBackend.Comms.DeviceComm;
+using ACSBackend.Comms.RemoteLogging;
 using ACSBackend.Configurations;
 using ACSBackend.Database;
 using ACSBackend.Discord;
@@ -19,6 +20,7 @@ namespace ACSBackend
             InitDeviceComm(builder);
             //InitDiscord(builder);
             InitActionLogger(builder);
+            InitRemoteLogging(builder);
 
             // Add services to the container.
 
@@ -76,6 +78,12 @@ namespace ACSBackend
         static void InitActionLogger(WebApplicationBuilder builder)
         {
             builder.Services.AddScoped<ActionLoggerService>();
+        }
+
+        static void InitRemoteLogging(WebApplicationBuilder builder)
+        {
+            builder.Services.AddHostedService<RemoteLoggingService>();
+            builder.Services.AddSingleton<RemoteLoggingService>();
         }
     }
 }
