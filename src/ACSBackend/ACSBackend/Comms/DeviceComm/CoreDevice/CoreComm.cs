@@ -22,7 +22,7 @@ namespace ACSBackend.Comms.DeviceComm
             string path = $"/action?action={(int)action}&actionsource={(int)source}";
             var res = (await RequestSender.POST(path, TimeSpan.FromSeconds(5))).ToActionRequestResult() ?? ActionRequestResult.ERROR;
 
-            //await actionLogger.LogActionAsync(source, action, res, user);
+            await actionLogger.LogActionAsync(source, action, res, user);
 
             return res;
         }

@@ -18,7 +18,7 @@ namespace ACSBackend
             InitDB(builder);
             InitDeviceComm(builder);
             //InitDiscord(builder);
-            //InitActionLogger(builder);
+            InitActionLogger(builder);
 
             // Add services to the container.
 
@@ -75,7 +75,7 @@ namespace ACSBackend
 
         static void InitActionLogger(WebApplicationBuilder builder)
         {
-            //builder.Services.AddScoped<ActionLoggerService>();
+            builder.Services.AddScoped<ActionLoggerService>();
         }
     }
 }

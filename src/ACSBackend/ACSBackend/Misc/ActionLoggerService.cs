@@ -9,10 +9,10 @@ using Microsoft.Extensions.Options;
 
 namespace ACSBackend.Misc
 {
-    public class ActionLoggerService(AppDBContext db, DiscordService dc, IOptions<DCConfiguration> dcConfig, ILogger<ActionLoggerService> logger)
+    public class ActionLoggerService(AppDBContext db,/* DiscordService dc, */ IOptions<DCConfiguration> dcConfig, ILogger<ActionLoggerService> logger)
     {
         AppDBContext _db = db;
-        DiscordClient _dc = dc.Client;
+        //DiscordClient _dc = dc.Client;
         DCConfiguration _dcConfig = dcConfig.Value;
         ILogger<ActionLoggerService> _logger = logger;
 
@@ -28,19 +28,19 @@ namespace ACSBackend.Misc
             };
 
 
-            await _db.ActionLogs.AddAsync(log);
-            await _db.SaveChangesAsync();
-
-
             await LogToDB(log);
-            await LogToDiscord(log);
+            //await LogToDiscord(log);
             
         }
 
         private async Task LogToDB(ActionLog log)
         {
+            await _db.ActionLogs.AddAsync(log);
+            await _db.SaveChangesAsync();
         }
 
+
+        /*
         private async Task LogToDiscord(ActionLog log)
         {
             var channel = await _dc.GetChannelAsync(_dcConfig.ActionLogChannel);
@@ -61,5 +61,6 @@ namespace ACSBackend.Misc
 
             await channel.SendMessageAsync(embed);
         }
+        */
     }
 }
