@@ -14,9 +14,13 @@ namespace ACSBackend.Comms.RemoteLogging
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("REMOTE LOGGING SERVICE EXECUTEASYNC STARTED");
+
+            _logger.LogInformation($"REMOTE LOGGING SERVICE EXECUTEASYNC STARTED / Hash Code: {this.GetHashCode()}");
 
             CoreLogger = new RemoteLogger(IPAddress.Any, _config.CoreLoggingPort);
+
+            _logger.LogInformation($"CREATED CORELOGGER INFO (CORELOGGER == NULL: {CoreLogger == null})");
+
             //FrontLogger = new RemoteLogger(IPAddress.Any, _config.FrontLoggingPort);
 
             _ = Task.Run(async delegate ()

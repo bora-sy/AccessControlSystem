@@ -21,6 +21,8 @@ namespace ACSBackend.Comms.WebServer.Controllers
 
             if(_remoteLogging == null) return BadRequest("REMOTELOGGING NULLLL");
             if(_remoteLogging.CoreLogger == null) return BadRequest("corelogger NULLLL");
+
+            _logger.LogInformation($"Remote logging hash: {_remoteLogging.GetHashCode()}");
             _remoteLogging.CoreLogger.RedirectLogs(new IPEndPoint(IP, port));
 
             return Ok("success");
