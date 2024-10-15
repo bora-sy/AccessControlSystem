@@ -82,8 +82,8 @@ namespace ACSBackend
 
         static void InitRemoteLogging(WebApplicationBuilder builder)
         {
-            builder.Services.AddSingleton<RemoteLoggingService>();
             builder.Services.AddHostedService<RemoteLoggingService>();
+            //builder.Services.AddSingleton<RemoteLoggingService>();
         }
     }
 }
