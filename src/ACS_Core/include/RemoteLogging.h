@@ -9,7 +9,7 @@
 #define REMOTELOG_W(format, ...) RemoteLogging::Log(format,pathToFileName(__FILE__), __LINE__, ESP_LOG_WARN, ##__VA_ARGS__)
 #define REMOTELOG_E(format, ...) RemoteLogging::Log(format,pathToFileName(__FILE__), __LINE__, ESP_LOG_ERROR, ##__VA_ARGS__)
 
-#define UDPLOGGINGPORT 1257
+#define UDPLOGGINGPORT 1357
 class RemoteLogging
 {
 private:
