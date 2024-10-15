@@ -15,7 +15,7 @@ namespace ACSBackend.Comms.RemoteLogging
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             CoreLogger = new RemoteLogger(IPAddress.Any, _config.CoreLoggingPort);
-            FrontLogger = new RemoteLogger(IPAddress.Any, _config.FrontLoggingPort);
+            //FrontLogger = new RemoteLogger(IPAddress.Any, _config.FrontLoggingPort);
 
             _ = Task.Run(async delegate ()
             {
@@ -32,7 +32,7 @@ namespace ACSBackend.Comms.RemoteLogging
                     }
                 }
             });
-
+            /*
             _ = Task.Run(async delegate ()
             {
                 while (!stoppingToken.IsCancellationRequested)
@@ -48,6 +48,7 @@ namespace ACSBackend.Comms.RemoteLogging
                     }
                 }
             });
+            */
 
         }
 
