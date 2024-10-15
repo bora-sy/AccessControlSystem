@@ -20,7 +20,7 @@ namespace ACSBackend.Misc
         {
             var log = new ActionLog
             {
-                User = user,
+                UserId = user?.ID,
                 Time = DateTime.UtcNow,
                 ActionSource = source,
                 Action = action,
